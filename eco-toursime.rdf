@@ -1,0 +1,549 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco/"
+     xml:base="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco/"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+    <owl:Ontology rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#ActiviteCulturelle -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#ActiviteCulturelle">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#ActiviteTouristique"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#ActiviteDetente -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#ActiviteDetente">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#ActiviteTouristique"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#ActiviteEducative -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#ActiviteEducative">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#ActiviteTouristique"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#ActiviteSportive -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#ActiviteSportive">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#ActiviteTouristique"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#ActiviteTouristique -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#ActiviteTouristique"/>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Atelier_culinaire -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Atelier_culinaire">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#ActiviteEducative"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Auberge -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Auberge">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Hebergement"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Avion -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Avion">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#TransportAerien"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#BateauEco -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#BateauEco">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#TransportMaritime"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Bus -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Bus">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#TransportTerrestre"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#CampingEcoResponsable -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#CampingEcoResponsable">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Hebergement"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#CertificatEco -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#CertificatEco"/>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Destination -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Destination"/>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#EcoTourism -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#EcoTourism">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#LabelNational"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#EmpreinteEco -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#EmpreinteEco">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#ImpactEnvironnemental"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Ferry -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Ferry">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#TransportMaritime"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#FormeDuTourisme -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#FormeDuTourisme"/>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#GiteRural -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#GiteRural">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Hebergement"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#GreenGlobe -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#GreenGlobe">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#LabelNational"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Guide -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Guide">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Personne"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Hebergement -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Hebergement"/>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Helicoptere -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Helicoptere">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#TransportAerien"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#HotelEcologique -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#HotelEcologique">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Hebergement"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#ImpactEnvironnemental -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#ImpactEnvironnemental"/>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#ImpactFaible -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#ImpactFaible">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#ImpactEnvironnemental"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#ImpactMoyen -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#ImpactMoyen">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#ImpactEnvironnemental"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#LabelInternational -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#LabelInternational">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#CertificatEco"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#LabelNational -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#LabelNational">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#CertificatEco"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Meditation -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Meditation">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#ActiviteDetente"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Montagne -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Montagne">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Destination"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Musee -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Musee">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#ActiviteCulturelle"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#PatrimoineCulturel -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#PatrimoineCulturel">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Destination"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Personne -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Personne"/>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Plage -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Plage">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Destination"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Plongee -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Plongee">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#ActiviteSportive"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Randonnee -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Randonnee">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#ActiviteSportive"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Spa -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Spa">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#ActiviteDetente"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#TourismeEnGroupe -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#TourismeEnGroupe">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#FormeDuTourisme"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#TourismeIndividuel -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#TourismeIndividuel">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#FormeDuTourisme"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Touriste -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Touriste">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Personne"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Train -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Train">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#TransportTerrestre"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Transport -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Transport"/>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#TransportAerien -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#TransportAerien">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Transport"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#TransportMaritime -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#TransportMaritime">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Transport"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#TransportTerrestre -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#TransportTerrestre">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Transport"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#VelosElectrique -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#VelosElectrique">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#TransportTerrestre"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Ville -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Ville">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Destination"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#VisiteHistorique -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#VisiteHistorique">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#ActiviteCulturelle"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Atelier_d'artisanat -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Atelier_d'artisanat">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#ActiviteEducative"/>
+    </owl:Class>
+
+    <!-- ================================ -->
+    <!-- NOUVELLES CLASSES - PROFILS VOYAGEURS -->
+    <!-- ================================ -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Voyageur">
+        <rdfs:label>Voyageur</rdfs:label>
+        <rdfs:comment>Profil d'un voyageur avec préférences et contraintes</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#ProfilVoyageur">
+        <rdfs:label>Profil Voyageur</rdfs:label>
+        <rdfs:comment>Classification du profil basée sur les préférences</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#VoyageurAdventure">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#ProfilVoyageur"/>
+        <rdfs:label>Voyageur Aventure</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#VoyageurCulture">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#ProfilVoyageur"/>
+        <rdfs:label>Voyageur Culture</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#VoyageurBienEtre">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#ProfilVoyageur"/>
+        <rdfs:label>Voyageur Bien-Être</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#VoyageurFamille">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#ProfilVoyageur"/>
+        <rdfs:label>Voyageur Famille</rdfs:label>
+    </owl:Class>
+
+    <!-- ================================ -->
+    <!-- NOUVELLES CLASSES - EMPREINTE CARBONE -->
+    <!-- ================================ -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#EmpreinteCarbone">
+        <rdfs:label>Empreinte Carbone</rdfs:label>
+        <rdfs:comment>Mesure l'impact carbone d'une activité ou transport</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#NiveauEmpreinte">
+        <rdfs:label>Niveau d'Empreinte</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#EmpreinteFaible">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#NiveauEmpreinte"/>
+        <rdfs:label>Empreinte Faible</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#EmpreinteMoyenne">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#NiveauEmpreinte"/>
+        <rdfs:label>Empreinte Moyenne</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#EmpreinteElevee">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#NiveauEmpreinte"/>
+        <rdfs:label>Empreinte Élevée</rdfs:label>
+    </owl:Class>
+
+    <!-- ================================ -->
+    <!-- NOUVELLES CLASSES - RECOMMANDATIONS -->
+    <!-- ================================ -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Recommandation">
+        <rdfs:label>Recommandation</rdfs:label>
+        <rdfs:comment>Recommandation personnalisée pour un voyageur</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#PackageTourisme">
+        <rdfs:label>Package Touristique</rdfs:label>
+        <rdfs:comment>Ensemble d'activités, hébergement et transport recommandés</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Avis">
+        <rdfs:label>Avis</rdfs:label>
+        <rdfs:comment>Avis d'utilisateurs sur une activité ou hébergement</rdfs:comment>
+    </owl:Class>
+
+    <!-- ================================ -->
+    <!-- PROPRIÉTÉS OBJET -->
+    <!-- ================================ -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#aProfil">
+        <rdfs:label>a pour profil</rdfs:label>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Voyageur"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#ProfilVoyageur"/>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#aEmpreinte">
+        <rdfs:label>a pour empreinte</rdfs:label>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Transport"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#EmpreinteCarbone"/>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#aCertification">
+        <rdfs:label>a pour certification</rdfs:label>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#CertificationEco"/>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#recommande">
+        <rdfs:label>recommande</rdfs:label>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Recommandation"/>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#pourVoyageur">
+        <rdfs:label>pour voyageur</rdfs:label>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Recommandation"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Voyageur"/>
+    </owl:ObjectProperty>
+
+    <!-- ================================ -->
+    <!-- PROPRIÉTÉS DONNÉES -->
+    <!-- ================================ -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#kgCO2">
+        <rdfs:label>kg CO2</rdfs:label>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#EmpreinteCarbone"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#scoreDurabilite">
+        <rdfs:label>score durabilité</rdfs:label>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#note">
+        <rdfs:label>note</rdfs:label>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Avis"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#scoreRecommandation">
+        <rdfs:label>score de recommandation</rdfs:label>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Recommandation"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#raison">
+        <rdfs:label>raison de la recommandation</rdfs:label>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#Recommandation"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 4.5.29.2024-05-13T12:11:03Z) https://github.com/owlcs/owlapi -->
+

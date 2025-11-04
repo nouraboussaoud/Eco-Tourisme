@@ -1,0 +1,326 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://www.semanticweb.org/waste-management/2025/1/"
+     xml:base="http://www.semanticweb.org/waste-management/2025/1/"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:wm="http://www.semanticweb.org/waste-management/2025/1/">
+    
+    <owl:Ontology rdf:about="http://www.semanticweb.org/waste-management/2025/1/">
+        <rdfs:label>Waste Management Ontology with Community Engagement</rdfs:label>
+        <rdfs:comment>Ontologie pour la gestion des déchets avec système d'engagement communautaire</rdfs:comment>
+    </owl:Ontology>
+
+    <!-- ================================ -->
+    <!-- CLASSES PRINCIPALES              -->
+    <!-- ================================ -->
+
+    <!-- Déchets et Types -->
+    <owl:Class rdf:about="http://www.semanticweb.org/waste-management/2025/1/#Dechet">
+        <rdfs:label>Déchet</rdfs:label>
+        <rdfs:comment>Représente un type de déchet</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.semanticweb.org/waste-management/2025/1/#TypeDechet">
+        <rdfs:label>Type de Déchet</rdfs:label>
+        <rdfs:comment>Classification des déchets</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.semanticweb.org/waste-management/2025/1/#DechetsOrganiques">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#TypeDechet"/>
+        <rdfs:label>Déchets Organiques</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.semanticweb.org/waste-management/2025/1/#DechetsRecyclables">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#TypeDechet"/>
+        <rdfs:label>Déchets Recyclables</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.semanticweb.org/waste-management/2025/1/#DechetsHazardeux">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#TypeDechet"/>
+        <rdfs:label>Déchets Dangereux</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.semanticweb.org/waste-management/2025/1/#DechetsEncombrants">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#TypeDechet"/>
+        <rdfs:label>Déchets Encombrants</rdfs:label>
+    </owl:Class>
+
+    <!-- Points de Collecte -->
+    <owl:Class rdf:about="http://www.semanticweb.org/waste-management/2025/1/#PointCollecte">
+        <rdfs:label>Point de Collecte</rdfs:label>
+        <rdfs:comment>Localisation de collecte des déchets</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.semanticweb.org/waste-management/2025/1/#PointDecheterie">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#PointCollecte"/>
+        <rdfs:label>Déchèterie</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.semanticweb.org/waste-management/2025/1/#PointBac">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#PointCollecte"/>
+        <rdfs:label>Point de Bac</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.semanticweb.org/waste-management/2025/1/#PointCompostage">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#PointCollecte"/>
+        <rdfs:label>Point de Compostage</rdfs:label>
+    </owl:Class>
+
+    <!-- Localisation -->
+    <owl:Class rdf:about="http://www.semanticweb.org/waste-management/2025/1/#Ville">
+        <rdfs:label>Ville</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.semanticweb.org/waste-management/2025/1/#Quartier">
+        <rdfs:label>Quartier</rdfs:label>
+    </owl:Class>
+
+    <!-- Engagement Communautaire -->
+    <owl:Class rdf:about="http://www.semanticweb.org/waste-management/2025/1/#Utilisateur">
+        <rdfs:label>Utilisateur</rdfs:label>
+        <rdfs:comment>Citoyen engagé</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.semanticweb.org/waste-management/2025/1/#Activite">
+        <rdfs:label>Activité</rdfs:label>
+        <rdfs:comment>Activité communautaire liée aux déchets</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.semanticweb.org/waste-management/2025/1/#Evenement">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#Activite"/>
+        <rdfs:label>Événement</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.semanticweb.org/waste-management/2025/1/#Defi">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#Activite"/>
+        <rdfs:label>Défi Communautaire</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.semanticweb.org/waste-management/2025/1/#Badge">
+        <rdfs:label>Badge</rdfs:label>
+        <rdfs:comment>Badge de récompense pour engagement</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.semanticweb.org/waste-management/2025/1/#Points">
+        <rdfs:label>Points de Récompense</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.semanticweb.org/waste-management/2025/1/#Contribution">
+        <rdfs:label>Contribution</rdfs:label>
+        <rdfs:comment>Contribution d'un utilisateur</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.semanticweb.org/waste-management/2025/1/#Commentaire">
+        <rdfs:label>Commentaire</rdfs:label>
+    </owl:Class>
+
+    <!-- Statistiques et Rapports -->
+    <owl:Class rdf:about="http://www.semanticweb.org/waste-management/2025/1/#Statistique">
+        <rdfs:label>Statistique</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.semanticweb.org/waste-management/2025/1/#Rapport">
+        <rdfs:label>Rapport</rdfs:label>
+    </owl:Class>
+
+    <!-- ================================ -->
+    <!-- PROPRIÉTÉS OBJET (Object Properties) -->
+    <!-- ================================ -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/waste-management/2025/1/#aType">
+        <rdfs:label>a pour type</rdfs:label>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#Dechet"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#TypeDechet"/>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/waste-management/2025/1/#localiseDans">
+        <rdfs:label>localisé dans</rdfs:label>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#PointCollecte"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#Ville"/>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/waste-management/2025/1/#localiseDansQuartier">
+        <rdfs:label>localisé dans quartier</rdfs:label>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#PointCollecte"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#Quartier"/>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/waste-management/2025/1/#accepte">
+        <rdfs:label>accepte</rdfs:label>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#PointCollecte"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#TypeDechet"/>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/waste-management/2025/1/#participant">
+        <rdfs:label>participant</rdfs:label>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#Activite"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#Utilisateur"/>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/waste-management/2025/1/#aContribution">
+        <rdfs:label>a pour contribution</rdfs:label>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#Utilisateur"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#Contribution"/>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/waste-management/2025/1/#aBadge">
+        <rdfs:label>a pour badge</rdfs:label>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#Utilisateur"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#Badge"/>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/waste-management/2025/1/#aCommentaire">
+        <rdfs:label>a pour commentaire</rdfs:label>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#Contribution"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#Commentaire"/>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/waste-management/2025/1/#aEffectue">
+        <rdfs:label>a effectué</rdfs:label>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#Utilisateur"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#Activite"/>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/waste-management/2025/1/#seLieuA">
+        <rdfs:label>se lieu à</rdfs:label>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#Activite"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#PointCollecte"/>
+    </owl:ObjectProperty>
+
+    <!-- ================================ -->
+    <!-- PROPRIÉTÉS DONNÉES (Data Properties) -->
+    <!-- ================================ -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/waste-management/2025/1/#nom">
+        <rdfs:label>nom</rdfs:label>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/waste-management/2025/1/#description">
+        <rdfs:label>description</rdfs:label>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/waste-management/2025/1/#adresse">
+        <rdfs:label>adresse</rdfs:label>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#PointCollecte"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/waste-management/2025/1/#latitude">
+        <rdfs:label>latitude</rdfs:label>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/waste-management/2025/1/#longitude">
+        <rdfs:label>longitude</rdfs:label>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/waste-management/2025/1/#horaires">
+        <rdfs:label>horaires</rdfs:label>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/waste-management/2025/1/#telephone">
+        <rdfs:label>téléphone</rdfs:label>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#PointCollecte"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/waste-management/2025/1/#email">
+        <rdfs:label>email</rdfs:label>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/waste-management/2025/1/#dateCreation">
+        <rdfs:label>date création</rdfs:label>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#dateTime"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/waste-management/2025/1/#dateActivite">
+        <rdfs:label>date activité</rdfs:label>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#Activite"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#dateTime"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/waste-management/2025/1/#nombrePoints">
+        <rdfs:label>nombre de points</rdfs:label>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#Points"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/waste-management/2025/1/#quantite">
+        <rdfs:label>quantité</rdfs:label>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/waste-management/2025/1/#unite">
+        <rdfs:label>unité</rdfs:label>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/waste-management/2025/1/#statut">
+        <rdfs:label>statut</rdfs:label>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <!-- ================================ -->
+    <!-- INSTANCES D'EXEMPLE              -->
+    <!-- ================================ -->
+
+    <!-- Villes -->
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/waste-management/2025/1/#Paris">
+        <rdf:type rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#Ville"/>
+        <wm:nom>Paris</wm:nom>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/waste-management/2025/1/#Lyon">
+        <rdf:type rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#Ville"/>
+        <wm:nom>Lyon</wm:nom>
+    </owl:NamedIndividual>
+
+    <!-- Types de Déchets -->
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/waste-management/2025/1/#TypeOrganique">
+        <rdf:type rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#DechetsOrganiques"/>
+        <wm:nom>Déchets Organiques</wm:nom>
+        <wm:description>Résidus alimentaires et jardins</wm:description>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/waste-management/2025/1/#TypeRecyclable">
+        <rdf:type rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#DechetsRecyclables"/>
+        <wm:nom>Déchets Recyclables</wm:nom>
+        <wm:description>Papier, plastique, verre, métal</wm:description>
+    </owl:NamedIndividual>
+
+    <!-- Points de Collecte -->
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/waste-management/2025/1/#Point1">
+        <rdf:type rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#PointDecheterie"/>
+        <wm:nom>Déchèterie Centrale Paris</wm:nom>
+        <wm:adresse>123 Boulevard de la Paix, Paris</wm:adresse>
+        <wm:latitude>48.8566</wm:latitude>
+        <wm:longitude>2.3522</wm:longitude>
+        <wm:horaires>8h-18h</wm:horaires>
+        <wm:telephone>01 23 45 67 89</wm:telephone>
+        <wm:localiseDans rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#Paris"/>
+        <wm:accepte rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#TypeOrganique"/>
+        <wm:accepte rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#TypeRecyclable"/>
+    </owl:NamedIndividual>
+
+    <!-- Badges -->
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/waste-management/2025/1/#BadgeEcoCitoyen">
+        <rdf:type rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#Badge"/>
+        <wm:nom>Éco-Citoyen</wm:nom>
+        <wm:description>Première participation à une activité communautaire</wm:description>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/waste-management/2025/1/#BadgeChampion">
+        <rdf:type rdf:resource="http://www.semanticweb.org/waste-management/2025/1/#Badge"/>
+        <wm:nom>Champion du Tri</wm:nom>
+        <wm:description>50 points accumulés</wm:description>
+    </owl:NamedIndividual>
+
+</rdf:RDF>
