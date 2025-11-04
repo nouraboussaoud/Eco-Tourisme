@@ -27,7 +27,16 @@ app.add_middleware(
 )
 
 # Initialize services
-fuseki_client = FusekiClient()
+# Use MockFusekiClient if Fuseki is not running
+try:
+    fuseki_client = FusekiClient()
+    # Test connection
+    fuseki_client.query("SELECT * WHERE { ?s ?p ?o . } LIMIT 1")
+except Exception as e:
+    print(f"⚠️  Fuseki not available, using mock client: {str(e)}")
+    from services.mock_fuseki_client import MockFusekiClient
+    fuseki_client = MockFusekiClient()
+
 nl_converter = NLToSparqlConverter()
 recommendation_engine = RecommendationEngine()
 

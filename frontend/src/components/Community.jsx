@@ -16,7 +16,7 @@ function Community({ activities, badges }) {
       </div>
 
       <div className="community-grid">
-        <!-- Badges Section -->
+        {/* Badges Section */}
         <div className="badges-section">
           <h3>
             <i className="fas fa-trophy"></i>
@@ -43,7 +43,7 @@ function Community({ activities, badges }) {
           </div>
         </div>
 
-        <!-- Activities Section -->
+        {/* Activities Section */}
         <div className="activities-section">
           <h3>
             <i className="fas fa-calendar"></i>
