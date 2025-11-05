@@ -164,20 +164,24 @@ function Statistics({ stats, destinations, activites }) {
       <div className="timeline-section">
         <h3>Historique des Activités</h3>
         <div className="timeline">
-          {activities.slice(0, 5).map((activity, idx) => (
-            <div key={idx} className="timeline-item">
-              <div className="timeline-marker"></div>
-              <div className="timeline-content">
-                <h4>{activity.nom}</h4>
-                <p>{activity.description || 'Pas de description'}</p>
-                {activity.dateActivite && (
-                  <span className="timeline-date">
-                    {new Date(activity.dateActivite).toLocaleDateString('fr-FR')}
-                  </span>
-                )}
+          {activites && activites.length > 0 ? (
+            activites.slice(0, 5).map((activity, idx) => (
+              <div key={idx} className="timeline-item">
+                <div className="timeline-marker"></div>
+                <div className="timeline-content">
+                  <h4>{activity.nom}</h4>
+                  <p>{activity.description || 'Pas de description'}</p>
+                  {activity.dateActivite && (
+                    <span className="timeline-date">
+                      {new Date(activity.dateActivite).toLocaleDateString('fr-FR')}
+                    </span>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p className="no-data">Aucune activité récente</p>
+          )}
         </div>
       </div>
     </div>

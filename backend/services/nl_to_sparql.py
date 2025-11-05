@@ -1,32 +1,43 @@
 # NL to SPARQL Conversion Service
 import re
 from typing import Dict, List, Tuple
-from config import ONTOLOGY_NS, USE_GEMINI
-import google.generativeai as genai
-from config import GEMINI_API_KEY
+from config import ONTOLOGY_NS, USE_GEMINI, GEMINI_API_KEY
+
+try:
+    import google.generativeai as genai
+    GEMINI_AVAILABLE = True
+except ImportError:
+    GEMINI_AVAILABLE = False
+    genai = None
 
 # Pattern matching for French NL to SPARQL conversion
 QUERY_PATTERNS = {
-    r"quels.*points.*collecte|points de collecte|déchèteries": "points_collecte",
-    r"quels.*types.*déchets|types de déchets|déchets acceptés": "types_dechets",
-    r"quels.*déchets.*acceptés": "dechets_acceptes",
-    r"toutes.*villes|villes|quelles villes": "villes",
-    r"quartier|quartiers": "quartiers",
-    r"activités|événements|défis|engagements": "activites",
-    r"utilisateur|participant|citoyen": "utilisateurs",
-    r"badge|récompense": "badges",
-    r"contribution|participation": "contributions",
+    r"destination.*durable|destinations.*éco|où aller|destination|région": "destinations",
+    r"hébergement.*écolo|hotel.*éco|logement.*durable|où dormir|hébergement": "hebergements",
+    r"activité|activités|que faire|loisir|sport|culture": "activites",
+    r"transport.*éco|émission.*carbone|co2|carbone.*voyage": "transports_eco",
+    r"certification.*éco|label.*vert|éco.*label|certification|green": "certifications",
+    r"voyageur|profil.*voyageur|type.*touriste": "voyageurs",
+    r"recommandation|suggestion|conseil|itinéraire": "recommandations",
+    r"avis|commentaire|note|évaluation|retour": "avis",
+    r"impacte?.*environnemental|impact.*écolog|pollution|durabilité": "impacts_eco",
 }
 
 class NLToSparqlConverter:
     """Convertit des questions en langage naturel français en requêtes SPARQL"""
     
     def __init__(self):
-        if USE_GEMINI and GEMINI_API_KEY:
-            genai.configure(api_key=GEMINI_API_KEY)
-            self.model = genai.GenerativeModel("gemini-pro")
+        if USE_GEMINI and GEMINI_AVAILABLE and GEMINI_API_KEY:
+            try:
+                genai.configure(api_key=GEMINI_API_KEY)
+                self.model = genai.GenerativeModel("gemini-pro")
+            except Exception as e:
+                print(f"⚠️  Gemini API configuration failed: {e}")
+                self.model = None
         else:
             self.model = None
+            if USE_GEMINI and not GEMINI_AVAILABLE:
+                print("⚠️  google-generativeai not installed. Install with: pip install google-generativeai")
     
     def detect_query_type(self, question: str) -> str:
         """Détecte le type de requête basée sur le contenu"""
@@ -37,107 +48,112 @@ class NLToSparqlConverter:
         return "generic"
     
     def extract_city_name(self, question: str) -> str:
-        """Extrait le nom d'une ville de la question"""
-        # Liste commune de villes français
-        cities = ["paris", "lyon", "marseille", "toulouse", "nice", "nantes", "bordeaux"]
+        """Extrait le nom d'une région/destination de la question"""
+        # Liste commune de destinations touristiques
+        destinations = ["paris", "lyon", "marseille", "côte d'azur", "alpes", "périgord", "bretagne", "provence", "corsica"]
         question_lower = question.lower()
-        for city in cities:
-            if city in question_lower:
-                return city.capitalize()
+        for dest in destinations:
+            if dest in question_lower:
+                return dest.capitalize()
         return ""
     
     def build_sparql_query(self, query_type: str, params: Dict = None) -> str:
         """Construit une requête SPARQL basée sur le type"""
         ns = ONTOLOGY_NS
         
-        if query_type == "points_collecte":
-            city = params.get("city", "") if params else ""
-            if city:
-                return f"""PREFIX wm: <{ns}>
-SELECT ?point ?nom ?adresse ?latitude ?longitude ?horaires
+        if query_type == "destinations":
+            region = params.get("region", "") if params else ""
+            if region:
+                return f"""PREFIX eco: <{ns}>
+SELECT ?destination ?nom ?description ?region ?certification
 WHERE {{
-  ?point rdf:type wm:PointCollecte .
-  ?point wm:nom ?nom .
-  ?point wm:adresse ?adresse .
-  ?point wm:latitude ?latitude .
-  ?point wm:longitude ?longitude .
-  ?point wm:horaires ?horaires .
-  ?point wm:localiseDans ?ville .
-  ?ville wm:nom "{city}" .
+  ?destination rdf:type eco:Destination .
+  ?destination wm:nom ?nom .
+  OPTIONAL {{ ?destination wm:description ?description }}
+  OPTIONAL {{ ?destination wm:localiseDans ?region }}
+  OPTIONAL {{ ?destination eco:aCertification ?certification }}
 }}"""
             else:
-                return f"""PREFIX wm: <{ns}>
-SELECT ?point ?nom ?adresse ?horaires
+                return f"""PREFIX eco: <{ns}>
+SELECT ?destination ?nom ?type ?description
 WHERE {{
-  ?point rdf:type wm:PointCollecte .
-  ?point wm:nom ?nom .
-  ?point wm:adresse ?adresse .
-  ?point wm:horaires ?horaires .
+  ?destination rdf:type eco:Destination .
+  ?destination wm:nom ?nom .
+  OPTIONAL {{ ?destination rdf:type ?type }}
+  OPTIONAL {{ ?destination wm:description ?description }}
 }}"""
         
-        elif query_type == "types_dechets":
-            return f"""PREFIX wm: <{ns}>
-SELECT ?type ?nom ?description
+        elif query_type == "hebergements":
+            return f"""PREFIX eco: <{ns}>
+SELECT ?hebergement ?nom ?type ?certification ?impact
 WHERE {{
-  ?type rdf:type wm:TypeDechet .
-  ?type wm:nom ?nom .
-  OPTIONAL {{ ?type wm:description ?description }}
-}}"""
-        
-        elif query_type == "dechets_acceptes":
-            return f"""PREFIX wm: <{ns}>
-SELECT DISTINCT ?point ?nom ?accepte
-WHERE {{
-  ?point rdf:type wm:PointCollecte .
-  ?point wm:nom ?nom .
-  ?point wm:accepte ?accepte .
-  ?accepte wm:nom ?typeName .
-}}"""
-        
-        elif query_type == "villes":
-            return f"""PREFIX wm: <{ns}>
-SELECT DISTINCT ?ville ?nom
-WHERE {{
-  ?ville rdf:type wm:Ville .
-  ?ville wm:nom ?nom .
+  ?hebergement rdf:type eco:Hebergement .
+  ?hebergement wm:nom ?nom .
+  OPTIONAL {{ ?hebergement rdf:type ?type }}
+  OPTIONAL {{ ?hebergement eco:aCertification ?certification }}
+  OPTIONAL {{ ?hebergement eco:aEmpreinte ?impact }}
 }}"""
         
         elif query_type == "activites":
-            return f"""PREFIX wm: <{ns}>
-SELECT ?activite ?nom ?description ?date
+            return f"""PREFIX eco: <{ns}>
+SELECT ?activite ?nom ?type ?description ?destination
 WHERE {{
-  ?activite rdf:type wm:Activite .
+  ?activite rdf:type eco:ActiviteTouristique .
   ?activite wm:nom ?nom .
+  OPTIONAL {{ ?activite rdf:type ?type }}
   OPTIONAL {{ ?activite wm:description ?description }}
-  OPTIONAL {{ ?activite wm:dateActivite ?date }}
+  OPTIONAL {{ ?activite eco:aLieu ?destination }}
 }}"""
         
-        elif query_type == "badges":
-            return f"""PREFIX wm: <{ns}>
-SELECT ?badge ?nom ?description
+        elif query_type == "transports_eco":
+            return f"""PREFIX eco: <{ns}>
+SELECT ?transport ?nom ?empreinte_co2 ?niveau_impact
 WHERE {{
-  ?badge rdf:type wm:Badge .
-  ?badge wm:nom ?nom .
-  OPTIONAL {{ ?badge wm:description ?description }}
+  ?transport rdf:type eco:Transport .
+  ?transport wm:nom ?nom .
+  OPTIONAL {{ ?transport eco:aEmpreinte ?empreinte }}
+  OPTIONAL {{ ?empreinte eco:kgCO2 ?empreinte_co2 }}
+  OPTIONAL {{ ?empreinte eco:niveauImpact ?niveau_impact }}
 }}"""
         
-        elif query_type == "utilisateurs":
-            return f"""PREFIX wm: <{ns}>
-SELECT ?utilisateur ?nom ?email
+        elif query_type == "certifications":
+            return f"""PREFIX eco: <{ns}>
+SELECT ?cert ?nom ?description ?label
 WHERE {{
-  ?utilisateur rdf:type wm:Utilisateur .
-  ?utilisateur wm:nom ?nom .
-  OPTIONAL {{ ?utilisateur wm:email ?email }}
+  ?cert rdf:type eco:CertificatEco .
+  ?cert wm:nom ?nom .
+  OPTIONAL {{ ?cert wm:description ?description }}
+  OPTIONAL {{ ?cert rdfs:label ?label }}
 }}"""
         
-        elif query_type == "contributions":
-            return f"""PREFIX wm: <{ns}>
-SELECT ?contribution ?description ?date ?utilisateur
+        elif query_type == "voyageurs":
+            return f"""PREFIX eco: <{ns}>
+SELECT ?voyageur ?nom ?profil ?budget
 WHERE {{
-  ?contribution rdf:type wm:Contribution .
-  OPTIONAL {{ ?contribution wm:description ?description }}
-  OPTIONAL {{ ?contribution wm:dateCreation ?date }}
-  OPTIONAL {{ ?utilisateur wm:aContribution ?contribution }}
+  ?voyageur rdf:type eco:Voyageur .
+  OPTIONAL {{ ?voyageur wm:nom ?nom }}
+  OPTIONAL {{ ?voyageur eco:aProfil ?profil }}
+  OPTIONAL {{ ?voyageur eco:budget ?budget }}
+}}"""
+        
+        elif query_type == "recommandations":
+            return f"""PREFIX eco: <{ns}>
+SELECT ?recommandation ?destination ?hebergement ?activite ?score
+WHERE {{
+  ?recommandation rdf:type eco:Recommandation .
+  OPTIONAL {{ ?recommandation eco:recommande ?destination }}
+  OPTIONAL {{ ?recommandation eco:recommande ?hebergement }}
+  OPTIONAL {{ ?recommandation eco:recommande ?activite }}
+  OPTIONAL {{ ?recommandation eco:scoreRecommandation ?score }}
+}}"""
+        
+        elif query_type == "impacts_eco":
+            return f"""PREFIX eco: <{ns}>
+SELECT ?element ?impact ?kgco2 ?niveau
+WHERE {{
+  ?element eco:aEmpreinte ?impact .
+  OPTIONAL {{ ?impact eco:kgCO2 ?kgco2 }}
+  OPTIONAL {{ ?impact rdf:type ?niveau }}
 }}"""
         
         return ""
@@ -164,10 +180,10 @@ WHERE {{
     def _convert_with_gemini(self, question: str) -> str:
         """Utilise Gemini pour convertir la question en SPARQL"""
         prompt = f"""
-Tu es un expert en SPARQL et en langage naturel. Convertis cette question française en requête SPARQL valide.
+Tu es un expert en SPARQL pour le tourisme éco-responsable. Convertis cette question française en requête SPARQL valide.
 Utilise le namespace: {ONTOLOGY_NS}
-Les classes principales sont: Dechet, TypeDechet, PointCollecte, Utilisateur, Activite, Evenement, Defi, Badge, Points, Contribution, Commentaire
-Les propriétés includes: aType, localiseDans, accepte, participant, aContribution, aBadge, aCommentaire, aEffectue, nom, description, adresse, etc.
+Les classes principales sont: Destination, Hebergement, ActiviteTouristique, Voyageur, Transport, Certifications, EmpreinteCarbone, Recommandation, Avis
+Les propriétés includes: aProfil, aEmpreinte, aCertification, recommande, pourVoyageur, nom, description, budget, kgCO2, scoreDurabilite, etc.
 
 Question: {question}
 

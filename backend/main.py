@@ -12,8 +12,8 @@ from example_queries import EXAMPLE_QUERIES
 
 # Initialize FastAPI app
 app = FastAPI(
-    title="Waste Management NL to SPARQL API",
-    description="API pour convertir des questions en langage naturel français en requêtes SPARQL",
+    title="Tourisme Éco-responsable - NL to SPARQL API",
+    description="API pour convertir des questions en langage naturel français en requêtes SPARQL pour le tourisme durable",
     version="1.0.0"
 )
 
@@ -27,18 +27,22 @@ app.add_middleware(
 )
 
 # Initialize services
-# Use MockFusekiClient if Fuseki is not running
-try:
-    fuseki_client = FusekiClient()
-    # Test connection
-    fuseki_client.query("SELECT * WHERE { ?s ?p ?o . } LIMIT 1")
-except Exception as e:
-    print(f"⚠️  Fuseki not available, using mock client: {str(e)}")
-    from services.mock_fuseki_client import MockFusekiClient
-    fuseki_client = MockFusekiClient()
+# Use MockFusekiClient for development (Fuseki dataset needs to be populated)
+print("🔧 Using Mock Fuseki Client with sample eco-tourism data")
+from services.mock_fuseki_client import MockFusekiClient
+fuseki_client = MockFusekiClient()
+
+# Uncomment below to use real Fuseki when data is loaded:
+# try:
+#     fuseki_client = FusekiClient()
+#     fuseki_client.query("SELECT * WHERE { ?s ?p ?o . } LIMIT 1")
+# except Exception as e:
+#     print(f"⚠️  Fuseki not available, using mock client: {str(e)}")
+#     from services.mock_fuseki_client import MockFusekiClient
+#     fuseki_client = MockFusekiClient()
 
 nl_converter = NLToSparqlConverter()
-recommendation_engine = RecommendationEngine()
+recommendation_engine = RecommendationEngine(fuseki_client=fuseki_client)
 
 # Pydantic models
 class QueryRequest(BaseModel):
@@ -50,17 +54,18 @@ class QueryResponse(BaseModel):
     results: List[Dict[str, str]]
     execution_time: float
 
-class ContributionRequest(BaseModel):
-    utilisateur: str
-    description: str
-    type: str = "contribution"
-    quantite: Optional[float] = None
-    unite: Optional[str] = None
+class AvisVoyageurRequest(BaseModel):
+    voyageur: str
+    attraction_id: str
+    note: float = Query(..., ge=1, le=5, description="Note de 1 à 5")
+    commentaire: str
+    type_attraction: str = "destination"  # destination, hebergement, activite
 
-class CommentRequest(BaseModel):
-    contribution_id: str
-    utilisateur: str
-    text: str
+class SignalementEcoRequest(BaseModel):
+    voyageur: str
+    destination: str
+    type_signalement: str  # pollution, destruction, non-respect_eco
+    description: str
 
 class RecommendationRequest(BaseModel):
     profile: str = Query(..., description="Profil voyageur: Adventure, Culture, BienEtre, Famille")
@@ -98,6 +103,7 @@ WHERE {{
         }
 
 @app.post("/query", response_model=QueryResponse, tags=["NL Query"])
+@app.post("/query/nl", response_model=QueryResponse, tags=["NL Query"])
 async def natural_language_query(req: QueryRequest):
     """Convertit une question en langage naturel en requête SPARQL et exécute"""
     try:
@@ -135,25 +141,51 @@ async def direct_sparql_query(query: str = Query(..., description="Requête SPAR
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur SPARQL: {str(e)}")
 
-@app.post("/contribution", tags=["Community"])
-async def add_contribution(req: ContributionRequest):
-    """Ajoute une nouvelle contribution"""
+@app.post("/avis", tags=["Community"])
+async def add_avis(req: AvisVoyageurRequest):
+    """Ajoute un avis sur une attraction"""
     try:
-        contribution_id = f"contribution_{datetime.now().timestamp()}"
-        sparql_update = f"""PREFIX wm: <{ONTOLOGY_NS}>
+        avis_id = f"avis_{datetime.now().timestamp()}"
+        sparql_update = f"""PREFIX eco: <{ONTOLOGY_NS}>
 INSERT DATA {{
-  wm:{contribution_id} rdf:type wm:Contribution ;
-    wm:description "{req.description}" ;
-    wm:dateCreation "{datetime.now().isoformat()}"^^xsd:dateTime ;
-    wm:quantite {req.quantite or 0} ;
-    wm:unite "{req.unite or 'unité'}" .
+  eco:{avis_id} rdf:type eco:Avis ;
+    eco:note {req.note} ;
+    eco:voyageur "{req.voyageur}" ;
+    eco:surAttraction "{req.attraction_id}" ;
+    eco:typeAttraction "{req.type_attraction}" ;
+    eco:commentaire "{req.commentaire}" ;
+    eco:dateAvis "{datetime.now().isoformat()}"^^xsd:dateTime .
 }}"""
         
         fuseki_client.update(sparql_update)
         return {
             "status": "success",
-            "contribution_id": contribution_id,
-            "message": "Contribution ajoutée avec succès"
+            "avis_id": avis_id,
+            "message": "Avis ajouté avec succès"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erreur: {str(e)}")
+
+@app.post("/signalement-eco", tags=["Community"])
+async def add_signalement(req: SignalementEcoRequest):
+    """Signale un problème écologique"""
+    try:
+        signalement_id = f"signalement_{datetime.now().timestamp()}"
+        sparql_update = f"""PREFIX eco: <{ONTOLOGY_NS}>
+INSERT DATA {{
+  eco:{signalement_id} rdf:type eco:SignalementEnvironnemental ;
+    eco:voyageur "{req.voyageur}" ;
+    eco:destination "{req.destination}" ;
+    eco:typeProblem "{req.type_signalement}" ;
+    eco:description "{req.description}" ;
+    eco:dateSignalement "{datetime.now().isoformat()}"^^xsd:dateTime .
+}}"""
+        
+        fuseki_client.update(sparql_update)
+        return {
+            "status": "success",
+            "signalement_id": signalement_id,
+            "message": "Signalement enregistré avec succès"
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur: {str(e)}")
@@ -166,64 +198,76 @@ async def get_example_queries():
         "description": "Exemples de requêtes SPARQL"
     }
 
-@app.get("/collection-points", tags=["Data"])
-async def get_collection_points(city: Optional[str] = None):
-    """Récupère tous les points de collecte"""
+@app.get("/destinations", tags=["Data"])
+async def get_destinations(region: Optional[str] = None):
+    """Récupère toutes les destinations éco-responsables"""
     try:
-        if city:
-            question = f"Quels sont les points de collecte à {city}?"
+        if region:
+            question = f"Quelles sont les destinations durables dans {region}?"
         else:
-            question = "Quels sont les points de collecte?"
+            question = "Quelles sont les destinations éco-responsables?"
         
         sparql_query = nl_converter.convert_question_to_sparql(question)
         results_json = fuseki_client.query(sparql_query)
         results = fuseki_client.parse_results(results_json)
         
         return {
-            "collection_points": results,
+            "destinations": results,
             "count": len(results),
-            "city": city
+            "region": region
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur: {str(e)}")
 
-@app.get("/waste-types", tags=["Data"])
-async def get_waste_types():
-    """Récupère tous les types de déchets"""
+@app.get("/hebergements", tags=["Data"])
+async def get_hebergements(eco_certified: Optional[bool] = False):
+    """Récupère les hébergements écologiques"""
     try:
-        sparql_query = nl_converter.convert_question_to_sparql("Quels sont les types de déchets?")
+        if eco_certified:
+            question = "Quels sont les hébergements certifiés écologiques?"
+        else:
+            question = "Quels sont les hébergements éco-responsables?"
+        
+        sparql_query = nl_converter.convert_question_to_sparql(question)
         results_json = fuseki_client.query(sparql_query)
         results = fuseki_client.parse_results(results_json)
         return {
-            "waste_types": results,
-            "count": len(results)
+            "hebergements": results,
+            "count": len(results),
+            "certified_only": eco_certified
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur: {str(e)}")
 
-@app.get("/activities", tags=["Community"])
-async def get_activities():
-    """Récupère toutes les activités communautaires"""
+@app.get("/activites", tags=["Data"])
+async def get_activites(type_activite: Optional[str] = None):
+    """Récupère les activités éco-responsables"""
     try:
-        sparql_query = nl_converter.convert_question_to_sparql("Quelles sont les activités?")
+        if type_activite:
+            question = f"Quelles sont les activités {type_activite}?"
+        else:
+            question = "Quelles sont les activités disponibles?"
+        
+        sparql_query = nl_converter.convert_question_to_sparql(question)
         results_json = fuseki_client.query(sparql_query)
         results = fuseki_client.parse_results(results_json)
         return {
-            "activities": results,
-            "count": len(results)
+            "activites": results,
+            "count": len(results),
+            "type": type_activite
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur: {str(e)}")
 
-@app.get("/badges", tags=["Community"])
-async def get_badges():
-    """Récupère tous les badges disponibles"""
+@app.get("/certifications", tags=["Data"])
+async def get_certifications():
+    """Récupère les certifications écologiques"""
     try:
-        sparql_query = nl_converter.convert_question_to_sparql("Quels sont les badges?")
+        sparql_query = nl_converter.convert_question_to_sparql("Quelles sont les certifications écologiques?")
         results_json = fuseki_client.query(sparql_query)
         results = fuseki_client.parse_results(results_json)
         return {
-            "badges": results,
+            "certifications": results,
             "count": len(results)
         }
     except Exception as e:
@@ -231,16 +275,18 @@ async def get_badges():
 
 @app.get("/stats", tags=["Analytics"])
 async def get_community_stats():
-    """Récupère les statistiques communautaires"""
+    """Récupère les statistiques du tourisme éco-responsable"""
     try:
-        sparql_query = f"""PREFIX wm: <{ONTOLOGY_NS}>
-SELECT (COUNT(DISTINCT ?utilisateur) as ?totalUsers)
-       (COUNT(DISTINCT ?activite) as ?totalActivities)
-       (COUNT(DISTINCT ?point) as ?totalPoints)
+        sparql_query = f"""PREFIX eco: <{ONTOLOGY_NS}>
+SELECT (COUNT(DISTINCT ?voyageur) as ?totalVoyageurs)
+       (COUNT(DISTINCT ?destination) as ?totalDestinations)
+       (COUNT(DISTINCT ?hebergement) as ?totalHebergements)
+       (COUNT(DISTINCT ?activite) as ?totalActivites)
 WHERE {{
-  OPTIONAL {{ ?utilisateur rdf:type wm:Utilisateur }}
-  OPTIONAL {{ ?activite rdf:type wm:Activite }}
-  OPTIONAL {{ ?point rdf:type wm:PointCollecte }}
+  OPTIONAL {{ ?voyageur rdf:type eco:Voyageur }}
+  OPTIONAL {{ ?destination rdf:type eco:Destination }}
+  OPTIONAL {{ ?hebergement rdf:type eco:Hebergement }}
+  OPTIONAL {{ ?activite rdf:type eco:ActiviteTouristique }}
 }}"""
         results_json = fuseki_client.query(sparql_query)
         results = fuseki_client.parse_results(results_json)

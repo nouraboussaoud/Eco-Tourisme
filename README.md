@@ -25,29 +25,29 @@ EcoTravel est une plateforme innovante qui combine:
 ### 🤖 **Traitement du Langage Naturel**
 - Conversion automatique de questions en français vers requêtes SPARQL
 - Support de Google Gemini AI ou SpaCy (local)
-- Pattern matching intelligent pour les questions communes
+- Pattern matching intelligent pour les questions communes sur les voyages
 
 ### 📊 **Données Sémantiques**
-- Ontologie RDF complète pour gestion des déchets
-- Classes : Déchets, Types, Points de collecte, Utilisateurs, Activités, Badges
+- Ontologie RDF complète pour tourisme durable
+- Classes : Destinations, Hébergements, Activités, Transports, Voyageurs, Profils
 - Propriétés complètes avec relations SPARQL
 
-### 🏘️ **Engagement Communautaire**
-- Système de badges et récompenses
-- Activités et défis collectifs
-- Suivi des contributions individuelles
-- Dashboard communautaire
+### 🏘️ **Engagement pour le Tourisme Durable**
+- Système de certifications écologiques
+- Activités touristiques responsables
+- Suivi des voyages éco-responsables
+- Dashboard d'impact écologique
 
-### 🗺️ **Localisation**
-- Points de collecte avec coordonnées GPS
-- Filtrage par ville et quartier
-- Horaires et informations de contact
+### 🗺️ **Localisation et Destinations**
+- Destinations avec coordonnées GPS
+- Filtrage par région et type de tourisme
+- Informations sur hébergements et activités locales
 
 ### 📈 **Analytiques**
 - Statistiques en temps réel
-- Impact environnemental estimé
-- Graphiques et rapports
-- Timeline des activités
+- Calcul d'empreinte carbone
+- Graphiques et rapports de durabilité
+- Timeline des voyages
 
 ### 🎯 **Interface Moderne**
 - Interface React réactive
@@ -149,14 +149,14 @@ Avant de démarrer l'application, vous devez charger l'ontologie RDF dans Fuseki
 1. Démarrer Fuseki (voir section Exécution)
 2. Accéder à `http://localhost:3030`
 3. Cliquer sur "manage datasets"
-4. Sélectionner le dataset `waste_management`
-5. Uploader le fichier `waste-management.rdf`
+4. Sélectionner le dataset `eco-tourism`
+5. Uploader le fichier `eco-toursime.rdf`
 
 **Option B: Via ligne de commande**
 
 ```powershell
 cd "C:\apache-jena-fuseki-4.x.x"
-.\bin\tdbloader --loc=databases\waste_management "c:\Users\abous\OneDrive\Bureau\webSemantique\waste-management.rdf"
+.\bin\tdbloader --loc=databases\eco-tourism "c:\Users\abous\OneDrive\Bureau\webSemantique\eco-toursime.rdf"
 ```
 
 ## ⚙️ Configuration
@@ -193,16 +193,16 @@ $env:BACKEND_PORT="8000"
 
 Ouvrir **3 terminaux PowerShell** distincts:
 
-### Terminal 1️⃣: **Démarrer Fuseki**
+### **Terminal 1️⃣: Démarrer Fuseki**
 
 ```powershell
 cd "C:\apache-jena-fuseki-4.x.x"
 
 # Démarrer le serveur
-.\fuseki-server.bat --update --mem /waste_management
+.\fuseki-server.bat --update --mem /eco-tourism
 
 # Ou avec stockage persistant:
-# .\fuseki-server.bat --update --loc=databases\waste_management /waste_management
+# .\fuseki-server.bat --update --loc=databases\eco-tourism /eco-tourism
 ```
 
 ✅ Fuseki démarre sur: `http://localhost:3030`

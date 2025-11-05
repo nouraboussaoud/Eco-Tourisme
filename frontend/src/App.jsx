@@ -4,6 +4,7 @@ import './App.css'
 import Header from './components/Header'
 import Dashboard from './components/Dashboard'
 import QueryInterface from './components/QueryInterface'
+import QueryTest from './components/QueryTest'
 import CollectionPoints from './components/CollectionPoints'
 import Community from './components/Community'
 import Statistics from './components/Statistics'
@@ -82,7 +83,7 @@ function App() {
               />
             )}
             {activeTab === 'query' && (
-              <QueryInterface apiUrl={API_BASE_URL} />
+              <QueryTest />
             )}
             {activeTab === 'points' && (
               <CollectionPoints 

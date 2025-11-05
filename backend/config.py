@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-FUSEKI_ENDPOINT = os.getenv("FUSEKI_ENDPOINT", "http://localhost:3030/waste_management/sparql")
+FUSEKI_ENDPOINT = os.getenv("FUSEKI_ENDPOINT", "http://localhost:3030/eco-tourism/sparql")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 USE_GEMINI = os.getenv("USE_GEMINI", "false").lower() == "true"
 BACKEND_PORT = int(os.getenv("BACKEND_PORT", "8000"))
@@ -18,4 +18,4 @@ CORS_ORIGINS = [
 ]
 
 # Ontology namespace
-ONTOLOGY_NS = "http://www.semanticweb.org/waste-management/2025/1/#"
+ONTOLOGY_NS = "http://www.semanticweb.org/eco-tourism/2025/1/#"

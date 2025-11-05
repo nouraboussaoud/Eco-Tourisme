@@ -7,34 +7,38 @@ class MockFusekiClient:
     """Mock Fuseki Client for development without actual Fuseki server"""
     
     def __init__(self):
-        # In-memory storage
+        # In-memory storage - Eco-Tourism Data
         self.data = {
-            "collection_points": [
-                {"id": "cp1", "name": "Point de Collecte Centre-Ville", "city": "Tunis", "address": "Rue de la Paix"},
-                {"id": "cp2", "name": "Point de Collecte Banlieue", "city": "Ariana", "address": "Avenue Habib Bourguiba"},
-                {"id": "cp3", "name": "Point de Collecte Eco-Park", "city": "Skhira", "address": "Zone Industrielle"},
+            "destinations": [
+                {"nom": "Parc Écologique Ichkeul", "localiseDans": "Bizerte", "description": "Réserve naturelle avec lacs et faune exceptionnelle", "scoreDurabilite": "95"},
+                {"nom": "Île de Djerba - Eco-Resort", "localiseDans": "Djerba", "description": "Destination balnéaire durable avec hébergements écologiques", "scoreDurabilite": "88"},
+                {"nom": "Montagnes de Dorsal", "localiseDans": "Tunisie centrale", "description": "Randonnée écologique et immersion nature", "scoreDurabilite": "92"},
+                {"nom": "Oasis de Douz", "localiseDans": "Sahara", "description": "Tourisme désertique responsable avec guides locaux", "scoreDurabilite": "85"},
+                {"nom": "Medina de Tunis - Patrimoine", "localiseDans": "Tunis", "description": "Exploration culturelle avec artisans locaux", "scoreDurabilite": "80"},
             ],
-            "waste_types": [
-                {"id": "wt1", "name": "Plastique", "recyclable": "true"},
-                {"id": "wt2", "name": "Papier", "recyclable": "true"},
-                {"id": "wt3", "name": "Verre", "recyclable": "true"},
-                {"id": "wt4", "name": "Métal", "recyclable": "true"},
-                {"id": "wt5", "name": "Organique", "recyclable": "false"},
+            "hebergements": [
+                {"nom": "Hotel Écologique Paradise", "localiseDans": "Djerba", "type": "HotelEcologique", "scoreDurabilite": "95", "certification": "EcoTourism", "description": "Hôtel 5 étoiles avec panneaux solaires et gestion écologique de l'eau"},
+                {"nom": "Gîte Rural Nomade", "localiseDans": "Douz", "type": "GiteRural", "scoreDurabilite": "88", "certification": "GreenGlobe", "description": "Hébergement traditionnel avec matériaux locaux"},
+                {"nom": "Auberge Bio Oasis", "localiseDans": "Tozeur", "type": "Auberge", "scoreDurabilite": "85", "certification": "EcoTourism", "description": "Auberge avec jardin bio et cuisine locale"},
+                {"nom": "Camping Écologique Plage", "localiseDans": "Bizerte", "type": "CampingEcoResponsable", "scoreDurabilite": "90", "certification": "GreenGlobe", "description": "Camping zéro déchet face à la mer"},
+                {"nom": "Resort Durable Méditerranée", "localiseDans": "Hammamet", "type": "HotelEcologique", "scoreDurabilite": "92", "certification": "EcoTourism", "description": "Resort avec certification environnementale"},
             ],
-            "activities": [
-                {"id": "act1", "name": "Nettoyage Plage", "description": "Activité de nettoyage côtier"},
-                {"id": "act2", "name": "Tri des Déchets", "description": "Tri manuel des déchets recyclables"},
-                {"id": "act3", "name": "Sensibilisation Écologique", "description": "Atelier de sensibilisation"},
+            "activites": [
+                {"nom": "Randonnée Écologique Ichkeul", "description": "Découverte de la biodiversité", "type": "Sportive", "kgCO2": "2.5", "profileRecommande": "Adventure"},
+                {"nom": "Visite Artisans Médina", "description": "Immersion culturelle avec artisans locaux", "type": "Culturelle", "kgCO2": "0.8", "profileRecommande": "Culture"},
+                {"nom": "Yoga au Coucher de Soleil", "description": "Séance de relaxation en nature", "type": "Detente", "kgCO2": "0.3", "profileRecommande": "BienEtre"},
+                {"nom": "Excursion Famille Désert", "description": "Safari écologique en 4x4 électrique", "type": "Familiale", "kgCO2": "5.2", "profileRecommande": "Famille"},
+                {"nom": "Atelier Cuisine Locale Durable", "description": "Cours de cuisine avec produits locaux bio", "type": "Educative", "kgCO2": "1.1", "profileRecommande": "Culture"},
             ],
-            "badges": [
-                {"id": "badge1", "name": "Eco-Warrior", "description": "10 activités complétées"},
-                {"id": "badge2", "name": "Green Collector", "description": "100kg de déchets collectés"},
-                {"id": "badge3", "name": "Sustainability Hero", "description": "1000kg de déchets collectés"},
+            "certifications": [
+                {"nom": "EcoTourism Certified", "description": "Certification internationale de tourisme écologique", "criteres": "Respect environnement et communautés locales"},
+                {"nom": "Green Globe", "description": "Standard global pour tourisme durable", "criteres": "Performance environnementale et sociale"},
+                {"nom": "Eco-Label Européen", "description": "Label UE pour tourisme responsable", "criteres": "Excellence environnementale"},
             ],
-            "users": [
-                {"id": "user1", "name": "Ahmed", "points": 150},
-                {"id": "user2", "name": "Fatima", "points": 200},
-                {"id": "user3", "name": "Mohamed", "points": 100},
+            "voyageurs": [
+                {"nom": "Ahmed", "profil": "Adventure", "empreinteCarbone": "45", "avis": "5"},
+                {"nom": "Fatima", "profil": "Culture", "empreinteCarbone": "28", "avis": "5"},
+                {"nom": "Mohamed", "profil": "BienEtre", "empreinteCarbone": "15", "avis": "4"},
             ]
         }
     
@@ -43,22 +47,27 @@ class MockFusekiClient:
         print(f"[MOCK FUSEKI] Executing: {sparql_query[:100]}...")
         
         # Parse the query to determine what to return
-        if "collection_points" in sparql_query.lower() or "pointcollecte" in sparql_query.lower():
-            results = self._format_results(self.data["collection_points"])
-        elif "waste" in sparql_query.lower() or "dechet" in sparql_query.lower():
-            results = self._format_results(self.data["waste_types"])
-        elif "activit" in sparql_query.lower():
-            results = self._format_results(self.data["activities"])
-        elif "badge" in sparql_query.lower():
-            results = self._format_results(self.data["badges"])
-        elif "count" in sparql_query.lower():
+        query_lower = sparql_query.lower()
+        
+        if "destination" in query_lower:
+            results = self._format_results(self.data["destinations"])
+        elif "hebergement" in query_lower:
+            results = self._format_results(self.data["hebergements"])
+        elif "activit" in query_lower:
+            results = self._format_results(self.data["activites"])
+        elif "certification" in query_lower:
+            results = self._format_results(self.data["certifications"])
+        elif "voyageur" in query_lower or "profile" in query_lower:
+            results = self._format_results(self.data["voyageurs"])
+        elif "count" in query_lower:
             results = {
                 "results": {
                     "bindings": [
                         {
-                            "totalUsers": {"type": "literal", "value": str(len(self.data["users"]))},
-                            "totalActivities": {"type": "literal", "value": str(len(self.data["activities"]))},
-                            "totalPoints": {"type": "literal", "value": str(len(self.data["collection_points"]))}
+                            "totalVoyageurs": {"type": "literal", "value": str(len(self.data["voyageurs"]))},
+                            "totalDestinations": {"type": "literal", "value": str(len(self.data["destinations"]))},
+                            "totalHebergements": {"type": "literal", "value": str(len(self.data["hebergements"]))},
+                            "totalActivites": {"type": "literal", "value": str(len(self.data["activites"]))}
                         }
                     ]
                 }
