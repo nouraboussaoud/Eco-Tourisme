@@ -86,6 +86,21 @@ class RecommendationEngine:
             for activity in activities:
                 # Extract activity type from data
                 activity_type = activity.get('type', activity.get('nom', ''))
+                
+                # Normalize type to match compatibility matrix format
+                # Mock returns "Sportive", "Culturelle", "Detente", "Educative", "Familiale"
+                # Matrix expects "ActiviteSportive", "ActiviteCulturelle", "ActiviteDetente", etc.
+                if activity_type and not activity_type.startswith('Activite'):
+                    # Map simple names to matrix keys
+                    type_mapping = {
+                        "Sportive": "ActiviteSportive",
+                        "Culturelle": "ActiviteCulturelle",
+                        "Detente": "ActiviteDetente",
+                        "Educative": "ActiviteEducative",
+                        "Familiale": "ActiviteEducative"  # Familiale maps to Educative
+                    }
+                    activity_type = type_mapping.get(activity_type, activity_type)
+                
                 score = self.calculate_match_score(profile, activity_type)
                 activity['match_score'] = score
                 scored.append(activity)
