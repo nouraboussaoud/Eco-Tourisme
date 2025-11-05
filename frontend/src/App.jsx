@@ -13,10 +13,10 @@ const API_BASE_URL = 'http://localhost:8000'
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard')
-  const [collectionPoints, setCollectionPoints] = useState([])
-  const [wasteTypes, setWasteTypes] = useState([])
-  const [activities, setActivities] = useState([])
-  const [badges, setBadges] = useState([])
+  const [destinations, setDestinations] = useState([])
+  const [hebergements, setHebergements] = useState([])
+  const [activites, setActivites] = useState([])
+  const [certifications, setCertifications] = useState([])
   const [stats, setStats] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -26,18 +26,18 @@ function App() {
     const fetchData = async () => {
       try {
         setLoading(true)
-        const [pointsRes, typesRes, activitiesRes, badgesRes, statsRes] = await Promise.all([
-          axios.get(`${API_BASE_URL}/collection-points`),
-          axios.get(`${API_BASE_URL}/waste-types`),
-          axios.get(`${API_BASE_URL}/activities`),
-          axios.get(`${API_BASE_URL}/badges`),
+        const [destRes, hebRes, activRes, certRes, statsRes] = await Promise.all([
+          axios.get(`${API_BASE_URL}/destinations`),
+          axios.get(`${API_BASE_URL}/hebergements`),
+          axios.get(`${API_BASE_URL}/activites`),
+          axios.get(`${API_BASE_URL}/certifications`),
           axios.get(`${API_BASE_URL}/stats`)
         ])
 
-        setCollectionPoints(pointsRes.data.collection_points || [])
-        setWasteTypes(typesRes.data.waste_types || [])
-        setActivities(activitiesRes.data.activities || [])
-        setBadges(badgesRes.data.badges || [])
+        setDestinations(destRes.data.destinations || [])
+        setHebergements(hebRes.data.hebergements || [])
+        setActivites(activRes.data.activites || [])
+        setCertifications(certRes.data.certifications || [])
         setStats(statsRes.data.statistics || {})
         setError(null)
       } catch (err) {
@@ -77,8 +77,8 @@ function App() {
             {activeTab === 'dashboard' && (
               <Dashboard 
                 stats={stats} 
-                collectionPoints={collectionPoints}
-                activities={activities}
+                destinations={destinations}
+                activites={activites}
               />
             )}
             {activeTab === 'query' && (
@@ -86,21 +86,21 @@ function App() {
             )}
             {activeTab === 'points' && (
               <CollectionPoints 
-                points={collectionPoints}
-                wasteTypes={wasteTypes}
+                destinations={destinations}
+                hebergements={hebergements}
               />
             )}
             {activeTab === 'community' && (
               <Community 
-                activities={activities}
-                badges={badges}
+                activites={activites}
+                certifications={certifications}
               />
             )}
             {activeTab === 'statistics' && (
               <Statistics 
                 stats={stats}
-                collectionPoints={collectionPoints}
-                activities={activities}
+                destinations={destinations}
+                activites={activites}
               />
             )}
             {activeTab === 'recommendations' && (

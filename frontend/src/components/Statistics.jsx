@@ -1,13 +1,13 @@
 import './Statistics.css'
 
-function Statistics({ stats, collectionPoints, activities }) {
+function Statistics({ stats, destinations, activites }) {
   const chartData = {
-    pointsPerCity: collectionPoints.reduce((acc, point) => {
+    pointsPerCity: (destinations || []).reduce((acc, point) => {
       const city = point.localiseDans?.split('#').pop() || 'Non spécifiée'
       acc[city] = (acc[city] || 0) + 1
       return acc
     }, {}),
-    activityTypes: activities.reduce((acc, activity) => {
+    activityTypes: (activites || []).reduce((acc, activity) => {
       const type = activity.type || 'Autre'
       acc[type] = (acc[type] || 0) + 1
       return acc
@@ -27,17 +27,17 @@ function Statistics({ stats, collectionPoints, activities }) {
       <div className="stats-cards">
         <div className="stat-card">
           <div className="stat-number">
-            {collectionPoints.length}
+            {destinations?.length || 0}
           </div>
           <div className="stat-label">
-            <i className="fas fa-map-marker-alt"></i>
-            Points de Collecte
+            <i className="fas fa-map-location-dot"></i>
+            Destinations
           </div>
         </div>
 
         <div className="stat-card">
           <div className="stat-number">
-            {activities.length}
+            {activites?.length || 0}
           </div>
           <div className="stat-label">
             <i className="fas fa-calendar"></i>
@@ -47,28 +47,28 @@ function Statistics({ stats, collectionPoints, activities }) {
 
         <div className="stat-card">
           <div className="stat-number">
-            {stats?.totalUsers || 0}
+            {stats?.totalVoyageurs || 0}
           </div>
           <div className="stat-label">
             <i className="fas fa-users"></i>
-            Utilisateurs Actifs
+            Voyageurs Actifs
           </div>
         </div>
 
         <div className="stat-card">
           <div className="stat-number">
-            {stats?.totalActivities || 0}
+            {stats?.totalHebergements || 0}
           </div>
           <div className="stat-label">
-            <i className="fas fa-heart"></i>
-            Contributions
+            <i className="fas fa-hotel"></i>
+            Hébergements
           </div>
         </div>
       </div>
 
       <div className="charts-grid">
         <div className="chart-card">
-          <h3>Points par Ville</h3>
+          <h3>Destinations par Région</h3>
           <div className="chart">
             {Object.entries(chartData.pointsPerCity).length > 0 ? (
               <ul className="bar-chart">
@@ -117,45 +117,45 @@ function Statistics({ stats, collectionPoints, activities }) {
       </div>
 
       <div className="impact-section">
-        <h3>Impact Environnemental</h3>
+        <h3>Impact Environnemental du Tourisme</h3>
         <div className="impact-cards">
+          <div className="impact-card">
+            <div className="icon">
+              <i className="fas fa-wind"></i>
+            </div>
+            <div className="content">
+              <h4>Empreinte Carbone Réduite</h4>
+              <p>Estimée à <strong>50% vs tourisme classique</strong></p>
+            </div>
+          </div>
+
           <div className="impact-card">
             <div className="icon">
               <i className="fas fa-leaf"></i>
             </div>
             <div className="content">
-              <h4>Réduction CO2</h4>
-              <p>Estimée à <strong>15 tonnes/an</strong></p>
+              <h4>Destinations Préservées</h4>
+              <p>Estimé à <strong>250+ écosystèmes protégés</strong></p>
             </div>
           </div>
 
           <div className="impact-card">
             <div className="icon">
-              <i className="fas fa-trash"></i>
+              <i className="fas fa-users-heart"></i>
             </div>
             <div className="content">
-              <h4>Déchets Collectés</h4>
-              <p>Estimé à <strong>250 tonnes</strong></p>
+              <h4>Impact Communautaire</h4>
+              <p>Revenu pour <strong>1,250+ communautés locales</strong></p>
             </div>
           </div>
 
           <div className="impact-card">
             <div className="icon">
-              <i className="fas fa-recycle"></i>
+              <i className="fas fa-check-circle"></i>
             </div>
             <div className="content">
-              <h4>Taux de Recyclage</h4>
-              <p>Actuellement à <strong>65%</strong></p>
-            </div>
-          </div>
-
-          <div className="impact-card">
-            <div className="icon">
-              <i className="fas fa-seedling"></i>
-            </div>
-            <div className="content">
-              <h4>Arbres Sauvés</h4>
-              <p>Estimé à <strong>1,250</strong></p>
+              <h4>Certifications Éco</h4>
+              <p>Actuellement <strong>400+ hébergements certifiés</strong></p>
             </div>
           </div>
         </div>

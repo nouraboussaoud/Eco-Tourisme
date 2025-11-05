@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import axios from 'axios'
 import './Recommendations.css'
 
@@ -13,7 +13,7 @@ function Recommendations({ apiUrl }) {
   const [error, setError] = useState(null)
   const [profiles, setProfiles] = useState([])
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchProfiles = async () => {
       try {
         const res = await axios.get(`${apiUrl}/recommendation/profiles`)
@@ -30,7 +30,7 @@ function Recommendations({ apiUrl }) {
     try {
       setLoading(true)
       setError(null)
-      const response = await axios.get(`${apiUrl}/recommendation/generate`, {
+      const response = await axios.post(`${apiUrl}/recommendation/generate`, null, {
         params: {
           profile: selectedProfile,
           destination,

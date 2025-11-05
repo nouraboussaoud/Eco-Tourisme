@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import './Community.css'
 
-function Community({ activities, badges }) {
+function Community({ activites, certifications }) {
   const [showForm, setShowForm] = useState(false)
-  const [selectedBadge, setSelectedBadge] = useState(null)
+  const [selectedCert, setSelectedCert] = useState(null)
 
   return (
     <div className="community">
@@ -20,25 +20,25 @@ function Community({ activities, badges }) {
         <div className="badges-section">
           <h3>
             <i className="fas fa-trophy"></i>
-            Badges & Récompenses
+            Certifications Écologiques
           </h3>
           <div className="badges-grid">
-            {badges && badges.length > 0 ? (
-              badges.map((badge, idx) => (
+            {certifications && certifications.length > 0 ? (
+              certifications.map((cert, idx) => (
                 <div 
                   key={idx}
                   className="badge-card"
-                  onClick={() => setSelectedBadge(badge)}
+                  onClick={() => setSelectedCert(cert)}
                 >
                   <div className="badge-icon">
-                    <i className="fas fa-star"></i>
+                    <i className="fas fa-leaf"></i>
                   </div>
-                  <h4>{badge.nom}</h4>
-                  <p>{badge.description || 'Badge'}</p>
+                  <h4>{cert.nom}</h4>
+                  <p>{cert.description || 'Certification'}</p>
                 </div>
               ))
             ) : (
-              <p className="no-data">Aucun badge disponible</p>
+              <p className="no-data">Aucune certification disponible</p>
             )}
           </div>
         </div>
@@ -47,16 +47,16 @@ function Community({ activities, badges }) {
         <div className="activities-section">
           <h3>
             <i className="fas fa-calendar"></i>
-            Activités & Défis
+            Activités & Avis Voyageurs
           </h3>
           <button className="btn-add" onClick={() => setShowForm(!showForm)}>
             <i className="fas fa-plus"></i>
-            Nouvelle Activité
+            Ajouter un Avis
           </button>
 
           <div className="activities-list">
-            {activities && activities.length > 0 ? (
-              activities.map((activity, idx) => (
+            {activites && activites.length > 0 ? (
+              activites.map((activity, idx) => (
                 <div key={idx} className="activity-card">
                   <div className="activity-badge">
                     <i className="fas fa-star"></i>
@@ -73,7 +73,7 @@ function Community({ activities, badges }) {
                   </div>
                   <button className="btn-join">
                     <i className="fas fa-check"></i>
-                    Participer
+                    Partager mon Expérience
                   </button>
                 </div>
               ))
@@ -84,17 +84,17 @@ function Community({ activities, badges }) {
         </div>
       </div>
 
-      {selectedBadge && (
-        <div className="badge-modal" onClick={() => setSelectedBadge(null)}>
+      {selectedCert && (
+        <div className="badge-modal" onClick={() => setSelectedCert(null)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="close-modal" onClick={() => setSelectedBadge(null)}>
+            <button className="close-modal" onClick={() => setSelectedCert(null)}>
               <i className="fas fa-times"></i>
             </button>
             <div className="modal-badge">
-              <i className="fas fa-star"></i>
+              <i className="fas fa-leaf"></i>
             </div>
-            <h2>{selectedBadge.nom}</h2>
-            <p>{selectedBadge.description || 'Badge'}</p>
+            <h2>{selectedCert.nom}</h2>
+            <p>{selectedCert.description || 'Certification'}</p>
             <button className="btn-primary">
               <i className="fas fa-info-circle"></i>
               Voir Plus
@@ -105,24 +105,24 @@ function Community({ activities, badges }) {
 
       {showForm && (
         <div className="contribution-form">
-          <h3>Ajouter une Contribution</h3>
+          <h3>Ajouter un Avis Voyageur</h3>
           <form>
             <div className="form-group">
-              <label>Type d'activité</label>
+              <label>Type de Voyage</label>
               <select>
-                <option>Contribution</option>
-                <option>Nettoyage</option>
-                <option>Tri des déchets</option>
-                <option>Engagement Communautaire</option>
+                <option>Aventure</option>
+                <option>Culture</option>
+                <option>Bien-être</option>
+                <option>Famille</option>
               </select>
             </div>
             <div className="form-group">
-              <label>Description</label>
-              <textarea placeholder="Décrivez votre contribution..."></textarea>
+              <label>Commentaire</label>
+              <textarea placeholder="Partagez votre expérience de voyage..."></textarea>
             </div>
             <div className="form-group">
-              <label>Quantité (kg)</label>
-              <input type="number" placeholder="Entrez la quantité" />
+              <label>Note (1-5)</label>
+              <input type="number" min="1" max="5" placeholder="Entrez votre note" />
             </div>
             <div className="form-buttons">
               <button type="button" className="btn-cancel" onClick={() => setShowForm(false)}>

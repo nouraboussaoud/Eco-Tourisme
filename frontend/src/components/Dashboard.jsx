@@ -1,29 +1,29 @@
 import './Dashboard.css'
 
-function Dashboard({ stats, collectionPoints, activities }) {
+function Dashboard({ stats, destinations, activites }) {
   const statCards = [
     {
-      title: 'Points de Collecte',
-      value: collectionPoints.length,
-      icon: 'fas fa-map-marker-alt',
+      title: 'Destinations',
+      value: destinations?.length || 0,
+      icon: 'fas fa-map-location-dot',
       color: '#667eea'
     },
     {
       title: 'Activités',
-      value: activities.length,
+      value: activites?.length || 0,
       icon: 'fas fa-calendar',
       color: '#f093fb'
     },
     {
-      title: 'Utilisateurs',
-      value: stats?.totalUsers || 0,
+      title: 'Voyageurs',
+      value: stats?.totalVoyageurs || 0,
       icon: 'fas fa-users',
       color: '#4ade80'
     },
     {
-      title: 'Contributions',
-      value: stats?.totalActivities || 0,
-      icon: 'fas fa-heart',
+      title: 'Hébergements',
+      value: stats?.totalHebergements || 0,
+      icon: 'fas fa-hotel',
       color: '#fbbf24'
     }
   ]
@@ -31,8 +31,8 @@ function Dashboard({ stats, collectionPoints, activities }) {
   return (
     <div className="dashboard">
       <div className="welcome-section">
-        <h1>Bienvenue sur EcoWaste Manager</h1>
-        <p>Plateforme collaborative de gestion des déchets avec système d'engagement communautaire</p>
+        <h1>Bienvenue sur Tourisme Éco-responsable</h1>
+        <p>Plateforme collaborative de voyage durable avec recommandations intelligentes</p>
       </div>
 
       <div className="stats-grid">
@@ -85,9 +85,9 @@ function Dashboard({ stats, collectionPoints, activities }) {
 
       <div className="recent-activities">
         <h2>Activités Récentes</h2>
-        {activities && activities.length > 0 ? (
+        {activites && activites.length > 0 ? (
           <div className="activities-list">
-            {activities.slice(0, 5).map((activity, idx) => (
+            {activites.slice(0, 5).map((activity, idx) => (
               <div key={idx} className="activity-item">
                 <div className="activity-icon">
                   <i className="fas fa-star"></i>

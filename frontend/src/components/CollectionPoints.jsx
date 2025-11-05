@@ -1,48 +1,48 @@
 import { useState } from 'react'
 import './CollectionPoints.css'
 
-function CollectionPoints({ points, wasteTypes }) {
+function CollectionPoints({ destinations, hebergements }) {
   const [selectedPoint, setSelectedPoint] = useState(null)
-  const [filterCity, setFilterCity] = useState('')
+  const [filterRegion, setFilterRegion] = useState('')
 
-  const cities = [...new Set(points.map(p => {
+  const regions = [...new Set(destinations.map(p => {
     const parts = p.localiseDans?.split('#') || [''];
     return parts[parts.length - 1] || 'Non spécifiée';
   }))]
 
-  const filteredPoints = filterCity 
-    ? points.filter(p => {
+  const filteredPoints = filterRegion 
+    ? destinations.filter(p => {
         const parts = p.localiseDans?.split('#') || [''];
-        return (parts[parts.length - 1] || '').includes(filterCity);
+        return (parts[parts.length - 1] || '').includes(filterRegion);
       })
-    : points
+    : destinations
 
   return (
     <div className="collection-points">
       <div className="points-header">
         <h2>
-          <i className="fas fa-map-marker-alt"></i>
-          Points de Collecte
+          <i className="fas fa-map-location-dot"></i>
+          Destinations Éco-responsables
         </h2>
-        <p>Trouvez les points de collecte les plus proches de vous</p>
+        <p>Explorez nos destinations durables et respectueuses de l'environnement</p>
       </div>
 
       <div className="points-filters">
         <div className="filter-group">
-          <label>Filtrer par ville:</label>
+          <label>Filtrer par région:</label>
           <select 
-            value={filterCity} 
-            onChange={(e) => setFilterCity(e.target.value)}
+            value={filterRegion} 
+            onChange={(e) => setFilterRegion(e.target.value)}
             className="filter-select"
           >
-            <option value="">Toutes les villes</option>
-            {cities.map(city => (
-              <option key={city} value={city}>{city}</option>
+            <option value="">Toutes les régions</option>
+            {regions.map(region => (
+              <option key={region} value={region}>{region}</option>
             ))}
           </select>
         </div>
         <div className="info-text">
-          {filteredPoints.length} point{filteredPoints.length !== 1 ? 's' : ''} trouvé{filteredPoints.length !== 1 ? 's' : ''}
+          {filteredPoints.length} destination{filteredPoints.length !== 1 ? 's' : ''} trouvée{filteredPoints.length !== 1 ? 's' : ''}
         </div>
       </div>
 
@@ -60,22 +60,22 @@ function CollectionPoints({ points, wasteTypes }) {
                   <i className="fas fa-chevron-right"></i>
                 </div>
                 <div className="point-info">
-                  {point.adresse && (
+                  {point.description && (
                     <p>
-                      <i className="fas fa-map-pin"></i>
-                      {point.adresse}
+                      <i className="fas fa-info-circle"></i>
+                      {point.description}
                     </p>
                   )}
-                  {point.horaires && (
+                  {point.localiseDans && (
                     <p>
-                      <i className="fas fa-clock"></i>
-                      {point.horaires}
+                      <i className="fas fa-location-dot"></i>
+                      {point.localiseDans}
                     </p>
                   )}
-                  {point.telephone && (
+                  {point.certification && (
                     <p>
-                      <i className="fas fa-phone"></i>
-                      {point.telephone}
+                      <i className="fas fa-leaf"></i>
+                      Certifié Eco
                     </p>
                   )}
                 </div>
@@ -85,7 +85,7 @@ function CollectionPoints({ points, wasteTypes }) {
         ) : (
           <div className="no-points">
             <i className="fas fa-search"></i>
-            <p>Aucun point de collecte trouvé</p>
+            <p>Aucune destination trouvée</p>
           </div>
         )}
       </div>
@@ -100,54 +100,54 @@ function CollectionPoints({ points, wasteTypes }) {
           </div>
 
           <div className="details-grid">
-            {selectedPoint.adresse && (
+            {selectedPoint.description && (
+              <div className="detail-item">
+                <i className="fas fa-book"></i>
+                <div>
+                  <label>Description</label>
+                  <p>{selectedPoint.description}</p>
+                </div>
+              </div>
+            )}
+
+            {selectedPoint.type && (
+              <div className="detail-item">
+                <i className="fas fa-tag"></i>
+                <div>
+                  <label>Type de destination</label>
+                  <p>{selectedPoint.type}</p>
+                </div>
+              </div>
+            )}
+
+            {selectedPoint.localiseDans && (
               <div className="detail-item">
                 <i className="fas fa-map-pin"></i>
                 <div>
-                  <label>Adresse</label>
-                  <p>{selectedPoint.adresse}</p>
+                  <label>Région</label>
+                  <p>{selectedPoint.localiseDans}</p>
                 </div>
               </div>
             )}
 
-            {selectedPoint.latitude && selectedPoint.longitude && (
+            {selectedPoint.certification && (
               <div className="detail-item">
-                <i className="fas fa-globe"></i>
+                <i className="fas fa-certificate"></i>
                 <div>
-                  <label>Coordonnées GPS</label>
-                  <p>{selectedPoint.latitude}, {selectedPoint.longitude}</p>
-                </div>
-              </div>
-            )}
-
-            {selectedPoint.horaires && (
-              <div className="detail-item">
-                <i className="fas fa-clock"></i>
-                <div>
-                  <label>Horaires</label>
-                  <p>{selectedPoint.horaires}</p>
-                </div>
-              </div>
-            )}
-
-            {selectedPoint.telephone && (
-              <div className="detail-item">
-                <i className="fas fa-phone"></i>
-                <div>
-                  <label>Téléphone</label>
-                  <p>{selectedPoint.telephone}</p>
+                  <label>Certification</label>
+                  <p>{selectedPoint.certification}</p>
                 </div>
               </div>
             )}
           </div>
 
-          {wasteTypes && wasteTypes.length > 0 && (
+          {hebergements && hebergements.length > 0 && (
             <div className="waste-types">
-              <h3>Types de déchets acceptés:</h3>
+              <h3>Hébergements recommandés:</h3>
               <div className="waste-list">
-                {wasteTypes.map((type, idx) => (
+                {hebergements.map((type, idx) => (
                   <span key={idx} className="waste-badge">
-                    <i className="fas fa-trash"></i>
+                    <i className="fas fa-hotel"></i>
                     {type.nom}
                   </span>
                 ))}
