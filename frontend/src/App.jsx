@@ -5,6 +5,7 @@ import Header from './components/Header'
 import Dashboard from './components/Dashboard'
 import QueryInterface from './components/QueryInterface'
 import QueryTest from './components/QueryTest'
+import CrudManager from './components/CrudManager'
 import CollectionPoints from './components/CollectionPoints'
 import Community from './components/Community'
 import Statistics from './components/Statistics'
@@ -84,6 +85,9 @@ function App() {
             )}
             {activeTab === 'query' && (
               <QueryTest />
+            )}
+            {activeTab === 'crud' && (
+              <CrudManager />
             )}
             {activeTab === 'points' && (
               <CollectionPoints 

@@ -1,5 +1,5 @@
 # FastAPI Main Application
-from fastapi import FastAPI, HTTPException, Query, File, UploadFile
+from fastapi import FastAPI, HTTPException, Query, File, UploadFile, Form
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Dict, Any, Optional
@@ -27,19 +27,16 @@ app.add_middleware(
 )
 
 # Initialize services
-# Use MockFusekiClient for development (Fuseki dataset needs to be populated)
-print("🔧 Using Mock Fuseki Client with sample eco-tourism data")
-from services.mock_fuseki_client import MockFusekiClient
-fuseki_client = MockFusekiClient()
-
-# Uncomment below to use real Fuseki when data is loaded:
-# try:
-#     fuseki_client = FusekiClient()
-#     fuseki_client.query("SELECT * WHERE { ?s ?p ?o . } LIMIT 1")
-# except Exception as e:
-#     print(f"⚠️  Fuseki not available, using mock client: {str(e)}")
-#     from services.mock_fuseki_client import MockFusekiClient
-#     fuseki_client = MockFusekiClient()
+# Use Real Fuseki Client with your dataset
+print("🔧 Connecting to Real Fuseki Server at /tourisme-eco-2")
+try:
+    fuseki_client = FusekiClient()
+    fuseki_client.query("SELECT * WHERE { ?s ?p ?o . } LIMIT 1")
+    print("✅ Successfully connected to Fuseki!")
+except Exception as e:
+    print(f"⚠️  Fuseki not available, using mock client: {str(e)}")
+    from services.mock_fuseki_client import MockFusekiClient
+    fuseki_client = MockFusekiClient()
 
 nl_converter = NLToSparqlConverter()
 recommendation_engine = RecommendationEngine(fuseki_client=fuseki_client)
@@ -128,18 +125,31 @@ async def natural_language_query(req: QueryRequest):
         raise HTTPException(status_code=500, detail=f"Erreur: {str(e)}")
 
 @app.post("/sparql", tags=["Direct SPARQL"])
-async def direct_sparql_query(query: str = Query(..., description="Requête SPARQL")):
-    """Exécute une requête SPARQL directe"""
+async def direct_sparql_query(query: str = Form(...)):
+    """Exécute une requête SPARQL directe (INSERT, SELECT, etc.)"""
     try:
-        results_json = fuseki_client.query(query)
-        results = fuseki_client.parse_results(results_json)
-        return {
-            "query": query,
-            "results": results,
-            "count": len(results)
-        }
+        # Si c'est une requête UPDATE/INSERT
+        if "INSERT" in query.upper() or "DELETE" in query.upper():
+            success = fuseki_client.update(query)
+            return {
+                "status": "success" if success else "failed",
+                "message": "Requête UPDATE exécutée",
+                "query": query[:200] + "..." if len(query) > 200 else query
+            }
+        # Sinon c'est un SELECT
+        else:
+            results_json = fuseki_client.query(query)
+            results = fuseki_client.parse_results(results_json)
+            return {
+                "query": query,
+                "results": results,
+                "count": len(results)
+            }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erreur SPARQL: {str(e)}")
+        import traceback
+        error_detail = f"Erreur SPARQL: {str(e)}\n{traceback.format_exc()}"
+        print(f"❌ SPARQL Error: {error_detail}")
+        raise HTTPException(status_code=500, detail=error_detail)
 
 @app.post("/avis", tags=["Community"])
 async def add_avis(req: AvisVoyageurRequest):
@@ -207,9 +217,13 @@ async def get_destinations(region: Optional[str] = None):
         else:
             question = "Quelles sont les destinations éco-responsables?"
         
+        print(f"🔍 Destinations - Question: {question}")
         sparql_query = nl_converter.convert_question_to_sparql(question)
+        print(f"🔍 Destinations - SPARQL: {sparql_query[:200]}...")
         results_json = fuseki_client.query(sparql_query)
+        print(f"🔍 Destinations - JSON keys: {results_json.keys() if isinstance(results_json, dict) else type(results_json)}")
         results = fuseki_client.parse_results(results_json)
+        print(f"✅ Destinations - Found {len(results)} results")
         
         return {
             "destinations": results,
@@ -217,7 +231,10 @@ async def get_destinations(region: Optional[str] = None):
             "region": region
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erreur: {str(e)}")
+        import traceback
+        error_msg = f"Erreur destinations: {str(e)}\n{traceback.format_exc()}"
+        print(f"❌ {error_msg}")
+        raise HTTPException(status_code=500, detail=error_msg)
 
 @app.get("/hebergements", tags=["Data"])
 async def get_hebergements(eco_certified: Optional[bool] = False):
@@ -228,16 +245,21 @@ async def get_hebergements(eco_certified: Optional[bool] = False):
         else:
             question = "Quels sont les hébergements éco-responsables?"
         
+        print(f"🔍 Hebergements - Question: {question}")
         sparql_query = nl_converter.convert_question_to_sparql(question)
         results_json = fuseki_client.query(sparql_query)
         results = fuseki_client.parse_results(results_json)
+        print(f"✅ Hebergements - Found {len(results)} results")
         return {
             "hebergements": results,
             "count": len(results),
             "certified_only": eco_certified
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erreur: {str(e)}")
+        import traceback
+        error_msg = f"Erreur hebergements: {str(e)}\n{traceback.format_exc()}"
+        print(f"❌ {error_msg}")
+        raise HTTPException(status_code=500, detail=error_msg)
 
 @app.get("/activites", tags=["Data"])
 async def get_activites(type_activite: Optional[str] = None):
@@ -278,6 +300,8 @@ async def get_community_stats():
     """Récupère les statistiques du tourisme éco-responsable"""
     try:
         sparql_query = f"""PREFIX eco: <{ONTOLOGY_NS}>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
 SELECT (COUNT(DISTINCT ?voyageur) as ?totalVoyageurs)
        (COUNT(DISTINCT ?destination) as ?totalDestinations)
        (COUNT(DISTINCT ?hebergement) as ?totalHebergements)

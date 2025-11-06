@@ -17,5 +17,5 @@ CORS_ORIGINS = [
     "http://127.0.0.1:3000",
 ]
 
-# Ontology namespace
-ONTOLOGY_NS = "http://www.semanticweb.org/eco-tourism/2025/1/#"
+# Ontology namespace - Match your Protégé RDF file
+ONTOLOGY_NS = "http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#"

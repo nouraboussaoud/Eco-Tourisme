@@ -58,102 +58,86 @@ class NLToSparqlConverter:
         return ""
     
     def build_sparql_query(self, query_type: str, params: Dict = None) -> str:
-        """Construit une requête SPARQL basée sur le type"""
+        """Construit une requête SPARQL basée sur le type détecté"""
         ns = ONTOLOGY_NS
+        params = params or {}
+        
+        # Préfixes standards pour toutes les requêtes
+        prefixes = f"""PREFIX eco: <{ns}>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+"""
         
         if query_type == "destinations":
-            region = params.get("region", "") if params else ""
-            if region:
-                return f"""PREFIX eco: <{ns}>
-SELECT ?destination ?nom ?description ?region ?certification
+            if params.get("city"):
+                return prefixes + f"""SELECT ?destination ?nom ?description ?region ?certification
 WHERE {{
   ?destination rdf:type eco:Destination .
-  ?destination wm:nom ?nom .
-  OPTIONAL {{ ?destination wm:description ?description }}
-  OPTIONAL {{ ?destination wm:localiseDans ?region }}
+  OPTIONAL {{ ?destination rdfs:label ?nom }}
+  OPTIONAL {{ ?destination rdfs:comment ?description }}
+  OPTIONAL {{ ?destination eco:localiseDans ?region }}
   OPTIONAL {{ ?destination eco:aCertification ?certification }}
 }}"""
             else:
-                return f"""PREFIX eco: <{ns}>
-SELECT ?destination ?nom ?type ?description
+                return prefixes + f"""SELECT ?destination ?nom ?description
 WHERE {{
   ?destination rdf:type eco:Destination .
-  ?destination wm:nom ?nom .
-  OPTIONAL {{ ?destination rdf:type ?type }}
-  OPTIONAL {{ ?destination wm:description ?description }}
+  OPTIONAL {{ ?destination rdfs:label ?nom }}
+  OPTIONAL {{ ?destination rdfs:comment ?description }}
 }}"""
         
         elif query_type == "hebergements":
-            return f"""PREFIX eco: <{ns}>
-SELECT ?hebergement ?nom ?type ?certification ?impact
+            return prefixes + f"""SELECT ?hebergement ?nom ?type ?certification
 WHERE {{
   ?hebergement rdf:type eco:Hebergement .
-  ?hebergement wm:nom ?nom .
-  OPTIONAL {{ ?hebergement rdf:type ?type }}
+  OPTIONAL {{ ?hebergement rdfs:label ?nom }}
   OPTIONAL {{ ?hebergement eco:aCertification ?certification }}
-  OPTIONAL {{ ?hebergement eco:aEmpreinte ?impact }}
 }}"""
         
         elif query_type == "activites":
-            return f"""PREFIX eco: <{ns}>
-SELECT ?activite ?nom ?type ?description ?destination
+            return prefixes + f"""SELECT ?activite ?nom ?description
 WHERE {{
   ?activite rdf:type eco:ActiviteTouristique .
-  ?activite wm:nom ?nom .
-  OPTIONAL {{ ?activite rdf:type ?type }}
-  OPTIONAL {{ ?activite wm:description ?description }}
-  OPTIONAL {{ ?activite eco:aLieu ?destination }}
+  OPTIONAL {{ ?activite rdfs:label ?nom }}
+  OPTIONAL {{ ?activite rdfs:comment ?description }}
 }}"""
         
         elif query_type == "transports_eco":
-            return f"""PREFIX eco: <{ns}>
-SELECT ?transport ?nom ?empreinte_co2 ?niveau_impact
+            return prefixes + f"""SELECT ?transport ?nom
 WHERE {{
   ?transport rdf:type eco:Transport .
-  ?transport wm:nom ?nom .
-  OPTIONAL {{ ?transport eco:aEmpreinte ?empreinte }}
-  OPTIONAL {{ ?empreinte eco:kgCO2 ?empreinte_co2 }}
-  OPTIONAL {{ ?empreinte eco:niveauImpact ?niveau_impact }}
+  OPTIONAL {{ ?transport rdfs:label ?nom }}
 }}"""
         
         elif query_type == "certifications":
-            return f"""PREFIX eco: <{ns}>
-SELECT ?cert ?nom ?description ?label
+            return prefixes + f"""SELECT ?cert ?nom ?description
 WHERE {{
   ?cert rdf:type eco:CertificatEco .
-  ?cert wm:nom ?nom .
-  OPTIONAL {{ ?cert wm:description ?description }}
-  OPTIONAL {{ ?cert rdfs:label ?label }}
+  OPTIONAL {{ ?cert rdfs:label ?nom }}
+  OPTIONAL {{ ?cert rdfs:comment ?description }}
 }}"""
         
         elif query_type == "voyageurs":
-            return f"""PREFIX eco: <{ns}>
-SELECT ?voyageur ?nom ?profil ?budget
+            return prefixes + f"""SELECT ?voyageur ?nom
 WHERE {{
   ?voyageur rdf:type eco:Voyageur .
-  OPTIONAL {{ ?voyageur wm:nom ?nom }}
-  OPTIONAL {{ ?voyageur eco:aProfil ?profil }}
-  OPTIONAL {{ ?voyageur eco:budget ?budget }}
+  OPTIONAL {{ ?voyageur rdfs:label ?nom }}
 }}"""
         
         elif query_type == "recommandations":
-            return f"""PREFIX eco: <{ns}>
-SELECT ?recommandation ?destination ?hebergement ?activite ?score
+            return prefixes + f"""SELECT ?recommandation ?destination
 WHERE {{
   ?recommandation rdf:type eco:Recommandation .
   OPTIONAL {{ ?recommandation eco:recommande ?destination }}
-  OPTIONAL {{ ?recommandation eco:recommande ?hebergement }}
-  OPTIONAL {{ ?recommandation eco:recommande ?activite }}
-  OPTIONAL {{ ?recommandation eco:scoreRecommandation ?score }}
 }}"""
         
         elif query_type == "impacts_eco":
-            return f"""PREFIX eco: <{ns}>
-SELECT ?element ?impact ?kgco2 ?niveau
+            return prefixes + f"""SELECT ?element ?impact
 WHERE {{
-  ?element eco:aEmpreinte ?impact .
-  OPTIONAL {{ ?impact eco:kgCO2 ?kgco2 }}
-  OPTIONAL {{ ?impact rdf:type ?niveau }}
+  ?element eco:aImpact ?impact .
 }}"""
         
         return ""
@@ -200,7 +184,10 @@ Réponds UNIQUEMENT avec la requête SPARQL sans explications additionnelles.
     def _build_generic_query(self, question: str) -> str:
         """Construit une requête générique pour questions non reconnues"""
         ns = ONTOLOGY_NS
-        return f"""PREFIX wm: <{ns}>
+        return f"""PREFIX eco: <{ns}>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
 SELECT ?subject ?predicate ?object
 WHERE {{
   ?subject ?predicate ?object .

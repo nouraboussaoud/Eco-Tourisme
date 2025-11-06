@@ -144,35 +144,57 @@ function QueryTest() {
         )}
 
         {results.length > 0 && (
-          <div className="result-section results-section">
-            <h3>
-              <i className="fas fa-database"></i>
-              Résultats de la requête ({results.length})
-            </h3>
-            <div className="results-table-wrapper">
-              <table className="results-table">
-                <thead>
-                  <tr>
-                    {Object.keys(results[0]).map((key) => (
-                      <th key={key}>
-                        <i className="fas fa-tag"></i>
-                        {key}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {results.map((row, idx) => (
-                    <tr key={idx}>
-                      {Object.values(row).map((val, i) => (
-                        <td key={i}>{val}</td>
+          <>
+            {/* Affichage format JSON brut */}
+            <div className="result-section json-section">
+              <h3>
+                <i className="fas fa-code"></i>
+                Réponse JSON brute ({results.length} résultats)
+              </h3>
+              <pre className="json-output">{JSON.stringify(results, null, 2)}</pre>
+              <button
+                className="copy-btn"
+                onClick={() => {
+                  navigator.clipboard.writeText(JSON.stringify(results, null, 2))
+                  alert('JSON copié!')
+                }}
+              >
+                <i className="fas fa-copy"></i>
+                Copier le JSON
+              </button>
+            </div>
+
+            {/* Affichage format tableau lisible */}
+            <div className="result-section results-section">
+              <h3>
+                <i className="fas fa-table"></i>
+                Résultats formatés (Vue tableau)
+              </h3>
+              <div className="results-table-wrapper">
+                <table className="results-table">
+                  <thead>
+                    <tr>
+                      {Object.keys(results[0]).map((key) => (
+                        <th key={key}>
+                          <i className="fas fa-tag"></i>
+                          {key}
+                        </th>
                       ))}
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {results.map((row, idx) => (
+                      <tr key={idx}>
+                        {Object.values(row).map((val, i) => (
+                          <td key={i}>{val}</td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
+          </>
         )}
 
         {sparqlQuery && results.length === 0 && !error && !loading && (
