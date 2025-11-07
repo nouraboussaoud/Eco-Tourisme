@@ -4,9 +4,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Dict, Any, Optional
 import uvicorn
+import json
 from datetime import datetime
 from services import FusekiClient, NLToSparqlConverter
 from services.recommendation_engine import RecommendationEngine
+from services.personality_test_service import PersonalityTestService
 from config import CORS_ORIGINS, BACKEND_PORT, ONTOLOGY_NS
 from example_queries import EXAMPLE_QUERIES
 
@@ -40,6 +42,7 @@ except Exception as e:
 
 nl_converter = NLToSparqlConverter()
 recommendation_engine = RecommendationEngine(fuseki_client=fuseki_client)
+personality_test_service = PersonalityTestService(fuseki_client=fuseki_client)
 
 # Pydantic models
 class QueryRequest(BaseModel):
@@ -70,6 +73,9 @@ class RecommendationRequest(BaseModel):
     budget: Optional[float] = Query(1000, description="Budget en euros")
     carbon_priority: Optional[bool] = Query(False, description="Priorité à l'écologie")
     days: Optional[int] = Query(3, description="Nombre de jours")
+
+class PersonalityTestAnswers(BaseModel):
+    answers: Dict[str, str] = Query(..., description="Réponses au test de personnalité (question_id: answer_value)")
 
 # Routes
 
@@ -455,6 +461,265 @@ async def get_transport_options(carbon_sensitive: bool = Query(False)):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur: {str(e)}")
+
+# ================================ -->
+# PERSONALITY TEST & TRIP PACKAGES -->
+# ================================ -->
+
+@app.get("/personality-test/questions", tags=["Personality Test"])
+async def get_personality_test_questions():
+    """Récupère les questions du test de personnalité"""
+    try:
+        questions = personality_test_service.get_questions()
+        return {
+            "questions": questions,
+            "total_questions": len(questions),
+            "description": "Test de personnalité pour recommandations de voyage personnalisées"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erreur: {str(e)}")
+
+@app.post("/personality-test/analyze", tags=["Personality Test"])
+async def analyze_personality_test(request: PersonalityTestAnswers):
+    """Analyse les réponses du test de personnalité et retourne le profil"""
+    try:
+        # Récupérer les destinations pour informer l'IA
+        places_query = """
+        PREFIX eco: <http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#>
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        SELECT ?nom ?type ?scoreDurabilite ?certifications
+        WHERE {
+            ?place rdf:type eco:Destination .
+            ?place eco:nom ?nom .
+            OPTIONAL { ?place eco:type ?type }
+            OPTIONAL { ?place eco:scoreDurabilite ?scoreDurabilite }
+            OPTIONAL { ?place eco:certifications ?certifications }
+        }
+        """
+        
+        try:
+            places_json = fuseki_client.query(places_query)
+            available_places = fuseki_client.parse_results(places_json)
+        except:
+            available_places = []
+        
+        # Analyser avec Gemini AI ou fallback
+        personality_profile = personality_test_service.analyze_personality_with_ai(
+            request.answers,
+            available_destinations=available_places
+        )
+        
+        return {
+            "status": "success",
+            "personality_profile": personality_profile,
+            "message": "Profil de personnalité généré avec succès"
+        }
+    except Exception as e:
+        import traceback
+        error_msg = f"Erreur analyse personnalité: {str(e)}\n{traceback.format_exc()}"
+        print(f"❌ {error_msg}")
+        raise HTTPException(status_code=500, detail=error_msg)
+
+@app.post("/personality-test/generate-package", tags=["Personality Test"])
+async def generate_trip_package_from_test(request: PersonalityTestAnswers):
+    """Génère un package de voyage complet basé sur le test de personnalité"""
+    try:
+        # 1. Récupérer TOUTES les destinations disponibles avec leurs certifications via SPARQL (ONLY REAL DATA)
+        print("\n" + "="*80)
+        print("📍 RÉCUPÉRATION DES DESTINATIONS DEPUIS FUSEKI")
+        print("="*80)
+        
+        places_query = """
+        PREFIX eco: <http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#>
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        
+        SELECT DISTINCT ?nom ?type ?description ?scoreDurabilite ?certifications ?region
+        WHERE {
+            ?dest rdf:type ?type .
+            FILTER(?type IN (eco:Destination, eco:Montagne, eco:Plage, eco:PatrimoineCulturel, eco:Ville))
+            ?dest rdfs:label ?nom .
+            OPTIONAL { ?dest eco:description ?description }
+            OPTIONAL { ?dest eco:scoreDurabilite ?scoreDurabilite }
+            OPTIONAL { ?dest eco:certifications ?certifications }
+            OPTIONAL { ?dest eco:localiseDans ?region }
+        }
+        ORDER BY DESC(?scoreDurabilite) ?nom
+        """
+        
+        print("📤 SPARQL QUERY SENT:")
+        print(places_query)
+        print("-"*80)
+        
+        try:
+            places_json = fuseki_client.query(places_query)
+            print("📥 FUSEKI RESPONSE (RAW JSON):")
+            print(json.dumps(places_json, indent=2, ensure_ascii=False)[:1500] + "...")
+            print("-"*80)
+            
+            available_places = fuseki_client.parse_results(places_json)
+            print(f"✅ PARSED RESULTS: {len(available_places)} destinations trouvées")
+            for i, place in enumerate(available_places[:3], 1):
+                print(f"   {i}. {place.get('nom', 'N/A')} - {place.get('region', 'N/A')} (Score: {place.get('scoreDurabilite', 'N/A')})")
+            print("="*80 + "\n")
+            
+            # NO MOCK DATA - Destinations are REQUIRED
+            if not available_places or len(available_places) == 0:
+                raise HTTPException(
+                    status_code=500, 
+                    detail="Aucune destination trouvée dans la base de données Fuseki. Veuillez ajouter des destinations."
+                )
+        except HTTPException:
+            raise
+        except Exception as e:
+            print(f"❌ ERREUR SPARQL DESTINATIONS: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            raise HTTPException(
+                status_code=500,
+                detail=f"Erreur lors de la récupération des destinations: {str(e)}"
+            )
+        
+        # 2. Analyser la personnalité avec les vraies destinations
+        print("🧠 Analyse du profil avec Gemini AI...")
+        personality_profile = personality_test_service.analyze_personality_with_ai(
+            request.answers, 
+            available_destinations=available_places
+        )
+        print(f"✅ Profil généré: {personality_profile.get('personality_type')}")
+        
+        # 3. Récupérer TOUS les hébergements disponibles avec leurs destinations
+        print("\n" + "="*80)
+        print("🏨 RÉCUPÉRATION DES HÉBERGEMENTS DEPUIS FUSEKI")
+        print("="*80)
+        
+        accommodations_query = """
+        PREFIX eco: <http://www.semanticweb.org/achref/ontologies/2025/9/tourism-eco#>
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        
+        SELECT DISTINCT ?nom ?type ?scoreDurabilite ?certifications ?prix ?destination ?destNom
+        WHERE {
+            ?acc rdf:type ?type .
+            FILTER(?type IN (eco:Hebergement, eco:HotelEcologique, eco:GiteRural, eco:CampingEcoResponsable, eco:Auberge))
+            ?acc rdfs:label ?nom .
+            OPTIONAL { ?acc eco:scoreDurabilite ?scoreDurabilite }
+            OPTIONAL { ?acc eco:certifications ?certifications }
+            OPTIONAL { ?acc eco:prixNuit ?prix }
+            OPTIONAL { 
+                ?acc eco:situeDans ?destination .
+                ?destination rdfs:label ?destNom 
+            }
+        }
+        ORDER BY DESC(?scoreDurabilite) ?nom
+        """
+        
+        print("📤 SPARQL QUERY SENT:")
+        print(accommodations_query)
+        print("-"*80)
+        
+        try:
+            acc_json = fuseki_client.query(accommodations_query)
+            print("📥 FUSEKI RESPONSE (RAW JSON):")
+            print(json.dumps(acc_json, indent=2, ensure_ascii=False)[:1500] + "...")
+            print("-"*80)
+            
+            available_accommodations = fuseki_client.parse_results(acc_json)
+            print(f"✅ PARSED RESULTS: {len(available_accommodations)} hébergements trouvés")
+            for i, acc in enumerate(available_accommodations[:3], 1):
+                dest = acc.get('destNom', acc.get('destination', 'Non lié'))
+                print(f"   {i}. {acc.get('nom', 'N/A')} - {acc.get('prix', 'N/A')}€ (Destination: {dest})")
+            print("="*80 + "\n")
+            
+            # Accommodations are OPTIONAL (destinations are primary)
+            if not available_accommodations or len(available_accommodations) == 0:
+                print("ℹ️  Aucun hébergement trouvé - Le package sera basé uniquement sur les destinations")
+                available_accommodations = []
+        except Exception as e:
+            print(f"⚠️ ERREUR SPARQL HÉBERGEMENTS: {str(e)}")
+            print("ℹ️  Continuons avec 0 hébergements - destinations sont prioritaires")
+            available_accommodations = []
+        
+        # 4. Générer le package de voyage avec destinations et hébergements liés
+        print("📦 Génération du package de voyage personnalisé...")
+        trip_package = personality_test_service.generate_trip_package(
+            personality_profile=personality_profile,
+            available_places=available_places,
+            available_accommodations=available_accommodations
+        )
+        
+        print(f"✅ Package généré avec {len(trip_package.get('places', []))} destinations")
+        
+        return {
+            "status": "success",
+            "personality_profile": personality_profile,
+            "trip_package": trip_package,
+            "message": "Package de voyage généré avec succès",
+            "data_sources": {
+                "total_destinations_available": len(available_places),
+                "total_accommodations_available": len(available_accommodations),
+                "destinations_in_package": len(trip_package.get('places', [])),
+                "accommodations_in_package": len(trip_package.get('accommodations', [])),
+                "sparql_used": True
+            }
+        }
+    except Exception as e:
+        import traceback
+        error_msg = f"Erreur génération package: {str(e)}\n{traceback.format_exc()}"
+        print(f"❌ {error_msg}")
+        raise HTTPException(status_code=500, detail=error_msg)
+
+@app.get("/personality-test/sample-package", tags=["Personality Test"])
+async def get_sample_trip_package(personality_type: str = Query("adventure")):
+    """Génère un package de voyage exemple pour tester"""
+    try:
+        # Créer un profil exemple
+        sample_answers = {
+            "1": "adventure" if personality_type == "adventure" else "culture",
+            "2": "very_high",
+            "3": "eco_lodge",
+            "4": "medium",
+            "5": "moderate",
+            "6": "train",
+            "7": "authentic"
+        }
+        
+        # Analyser
+        personality_profile = personality_test_service.analyze_personality_with_ai(sample_answers)
+        
+        # Données mock pour démo
+        available_places = [
+            {"nom": "Parc National des Pyrénées", "type": "Nature", "scoreDurabilite": "85", "certifications": "ISO 14001, Green Globe"},
+            {"nom": "Éco-Village de Provence", "type": "Culturel", "scoreDurabilite": "90", "certifications": "Bio, Eco-Label"},
+            {"nom": "Réserve Marine de Méditerranée", "type": "Nature", "scoreDurabilite": "88", "certifications": "Marine Conservation"},
+            {"nom": "Centre Historique d'Avignon", "type": "Culturel", "scoreDurabilite": "75", "certifications": "UNESCO"},
+            {"nom": "Sentier Écologique des Alpes", "type": "Nature", "scoreDurabilite": "92", "certifications": "Eco-Trail"},
+            {"nom": "Vignoble Biodynamique", "type": "Gastronomie", "scoreDurabilite": "87", "certifications": "Bio, Demeter"}
+        ]
+        
+        available_accommodations = [
+            {"nom": "Éco-Lodge du Parc", "type": "Lodge", "scoreDurabilite": "88", "certifications": "Green Key", "prix": "120"},
+            {"nom": "Maison d'Hôtes Bio", "type": "Guesthouse", "scoreDurabilite": "85", "certifications": "Bio, Ecolabel", "prix": "80"}
+        ]
+        
+        # Générer package
+        trip_package = personality_test_service.generate_trip_package(
+            personality_profile=personality_profile,
+            available_places=available_places,
+            available_accommodations=available_accommodations
+        )
+        
+        return {
+            "status": "success",
+            "personality_profile": personality_profile,
+            "trip_package": trip_package,
+            "note": "Ceci est un exemple de démonstration"
+        }
+    except Exception as e:
+        import traceback
+        error_msg = f"Erreur package exemple: {str(e)}\n{traceback.format_exc()}"
+        print(f"❌ {error_msg}")
+        raise HTTPException(status_code=500, detail=error_msg)
 
 # Entry point
 if __name__ == "__main__":

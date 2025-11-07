@@ -10,6 +10,7 @@ import CollectionPoints from './components/CollectionPoints'
 import Community from './components/Community'
 import Statistics from './components/Statistics'
 import Recommendations from './components/Recommendations'
+import PersonalityTest from './components/PersonalityTest'
 import { entityConfigs } from './config/entityConfigs'
 
 const API_BASE_URL = 'http://localhost:8000'
@@ -132,6 +133,9 @@ function App() {
             )}
             {activeTab === 'recommendations' && (
               <Recommendations apiUrl={API_BASE_URL} />
+            )}
+            {activeTab === 'personality-test' && (
+              <PersonalityTest />
             )}
           </>
         )}

@@ -3,6 +3,7 @@ import './Header.css'
 function Header({ activeTab, setActiveTab }) {
   const tabs = [
     { id: 'dashboard', icon: 'fas fa-home', label: 'Accueil' },
+    { id: 'personality-test', icon: 'fas fa-user-check', label: 'Test Personnalité' },
     { id: 'recommendations', icon: 'fas fa-compass', label: 'Recommandations' },
     { id: 'query', icon: 'fas fa-search', label: 'Recherche' },
     { id: 'destinations', icon: 'fas fa-map-marked-alt', label: 'Destinations' },
