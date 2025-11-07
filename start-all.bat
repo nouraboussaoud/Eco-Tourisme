@@ -9,16 +9,16 @@ echo ========================================
 echo.
 
 REM Vérifier si fuseki existe
-if not exist "C:\apache-jena-fuseki-4.10.0" (
+if not exist "C:\apache-jena-fuseki-5.6.0" (
     echo ERROR: Apache Jena Fuseki non trouvé!
     echo Télécharger depuis: https://jena.apache.org/download/index.cgi
-    echo Extraire dans: C:\apache-jena-fuseki-4.x.x
+    echo Extraire dans: C:\apache-jena-fuseki-5.x.x
     pause
     exit /b 1
 )
 
 echo [1/3] Démarrage de Fuseki...
-start "Fuseki Server" cmd /k "cd C:\apache-jena-fuseki-4.10.0 && fuseki-server.bat --update --mem /waste_management"
+start "Fuseki Server" cmd /k "cd C:\apache-jena-fuseki-5.6.0 && fuseki-server.bat --update --mem /tourisme-eco-2"
 
 timeout /t 3 /nobreak
 

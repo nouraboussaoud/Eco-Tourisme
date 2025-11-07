@@ -73,36 +73,73 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
         
         if query_type == "destinations":
             if params.get("city"):
-                return prefixes + f"""SELECT ?destination ?nom ?description ?region ?certification
+                return prefixes + f"""SELECT DISTINCT ?destination ?nom ?description ?region ?certification
 WHERE {{
-  ?destination rdf:type eco:Destination .
+  {{
+    {{ ?destination rdf:type eco:Destination }}
+    UNION {{ ?destination rdf:type eco:Montagne }}
+    UNION {{ ?destination rdf:type eco:Plage }}
+    UNION {{ ?destination rdf:type eco:PatrimoineCulturel }}
+    UNION {{ ?destination rdf:type eco:Ville }}
+  }}
   OPTIONAL {{ ?destination rdfs:label ?nom }}
   OPTIONAL {{ ?destination rdfs:comment ?description }}
   OPTIONAL {{ ?destination eco:localiseDans ?region }}
   OPTIONAL {{ ?destination eco:aCertification ?certification }}
 }}"""
             else:
-                return prefixes + f"""SELECT ?destination ?nom ?description
+                return prefixes + f"""SELECT DISTINCT ?destination ?nom ?description ?region
 WHERE {{
-  ?destination rdf:type eco:Destination .
+  {{
+    {{ ?destination rdf:type eco:Destination }}
+    UNION {{ ?destination rdf:type eco:Montagne }}
+    UNION {{ ?destination rdf:type eco:Plage }}
+    UNION {{ ?destination rdf:type eco:PatrimoineCulturel }}
+    UNION {{ ?destination rdf:type eco:Ville }}
+  }}
   OPTIONAL {{ ?destination rdfs:label ?nom }}
   OPTIONAL {{ ?destination rdfs:comment ?description }}
+  OPTIONAL {{ ?destination eco:localiseDans ?region }}
 }}"""
         
         elif query_type == "hebergements":
-            return prefixes + f"""SELECT ?hebergement ?nom ?type ?certification
+            return prefixes + f"""SELECT DISTINCT ?hebergement ?nom ?description ?prix ?capacite ?certification
 WHERE {{
-  ?hebergement rdf:type eco:Hebergement .
+  {{
+    {{ ?hebergement rdf:type eco:Hebergement }}
+    UNION {{ ?hebergement rdf:type eco:HotelEcologique }}
+    UNION {{ ?hebergement rdf:type eco:GiteRural }}
+    UNION {{ ?hebergement rdf:type eco:CampingEcoResponsable }}
+    UNION {{ ?hebergement rdf:type eco:Auberge }}
+  }}
   OPTIONAL {{ ?hebergement rdfs:label ?nom }}
+  OPTIONAL {{ ?hebergement rdfs:comment ?description }}
+  OPTIONAL {{ ?hebergement eco:prixNuit ?prix }}
+  OPTIONAL {{ ?hebergement eco:capacite ?capacite }}
   OPTIONAL {{ ?hebergement eco:aCertification ?certification }}
 }}"""
         
         elif query_type == "activites":
-            return prefixes + f"""SELECT ?activite ?nom ?description
+            return prefixes + f"""SELECT DISTINCT ?activite ?nom ?description ?duree ?prix
 WHERE {{
-  ?activite rdf:type eco:ActiviteTouristique .
+  {{
+    {{ ?activite rdf:type eco:ActiviteTouristique }}
+    UNION {{ ?activite rdf:type eco:Randonnee }}
+    UNION {{ ?activite rdf:type eco:Plongee }}
+    UNION {{ ?activite rdf:type eco:VisiteHistorique }}
+    UNION {{ ?activite rdf:type eco:ActiviteEducative }}
+    UNION {{ ?activite rdf:type eco:ActiviteCulturelle }}
+    UNION {{ ?activite rdf:type eco:ActiviteSportive }}
+    UNION {{ ?activite rdf:type eco:ActiviteDetente }}
+    UNION {{ ?activite rdf:type eco:Meditation }}
+    UNION {{ ?activite rdf:type eco:Spa }}
+    UNION {{ ?activite rdf:type eco:Musee }}
+    UNION {{ ?activite rdf:type eco:Atelier_culinaire }}
+  }}
   OPTIONAL {{ ?activite rdfs:label ?nom }}
   OPTIONAL {{ ?activite rdfs:comment ?description }}
+  OPTIONAL {{ ?activite eco:duree ?duree }}
+  OPTIONAL {{ ?activite eco:cout ?prix }}
 }}"""
         
         elif query_type == "transports_eco":
@@ -113,11 +150,18 @@ WHERE {{
 }}"""
         
         elif query_type == "certifications":
-            return prefixes + f"""SELECT ?cert ?nom ?description
+            return prefixes + f"""SELECT DISTINCT ?cert ?nom ?description ?organisme
 WHERE {{
-  ?cert rdf:type eco:CertificatEco .
+  {{
+    {{ ?cert rdf:type eco:CertificatEco }}
+    UNION {{ ?cert rdf:type eco:LabelInternational }}
+    UNION {{ ?cert rdf:type eco:LabelNational }}
+    UNION {{ ?cert rdf:type eco:GreenGlobe }}
+    UNION {{ ?cert rdf:type eco:EcoTourism }}
+  }}
   OPTIONAL {{ ?cert rdfs:label ?nom }}
   OPTIONAL {{ ?cert rdfs:comment ?description }}
+  OPTIONAL {{ ?cert eco:organismeEmetteur ?organisme }}
 }}"""
         
         elif query_type == "voyageurs":
