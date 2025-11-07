@@ -5,8 +5,10 @@ function Header({ activeTab, setActiveTab }) {
     { id: 'dashboard', icon: 'fas fa-home', label: 'Accueil' },
     { id: 'recommendations', icon: 'fas fa-compass', label: 'Recommandations' },
     { id: 'query', icon: 'fas fa-search', label: 'Recherche' },
-    { id: 'crud', icon: 'fas fa-database', label: 'CRUD' },
-    { id: 'points', icon: 'fas fa-map-location-dot', label: 'Destinations' },
+    { id: 'destinations', icon: 'fas fa-map-marked-alt', label: 'Destinations' },
+    { id: 'hebergements', icon: 'fas fa-hotel', label: 'Hébergements' },
+    { id: 'activites', icon: 'fas fa-hiking', label: 'Activités' },
+    { id: 'certifications', icon: 'fas fa-certificate', label: 'Certifications' },
     { id: 'community', icon: 'fas fa-earth-americas', label: 'Communauté' },
     { id: 'statistics', icon: 'fas fa-chart-bar', label: 'Statistiques' }
   ]

@@ -5,11 +5,12 @@ import Header from './components/Header'
 import Dashboard from './components/Dashboard'
 import QueryInterface from './components/QueryInterface'
 import QueryTest from './components/QueryTest'
-import CrudManager from './components/CrudManager'
+import EntityManager from './components/EntityManager'
 import CollectionPoints from './components/CollectionPoints'
 import Community from './components/Community'
 import Statistics from './components/Statistics'
 import Recommendations from './components/Recommendations'
+import { entityConfigs } from './config/entityConfigs'
 
 const API_BASE_URL = 'http://localhost:8000'
 
@@ -86,8 +87,29 @@ function App() {
             {activeTab === 'query' && (
               <QueryTest />
             )}
-            {activeTab === 'crud' && (
-              <CrudManager />
+            {activeTab === 'destinations' && (
+              <EntityManager 
+                entityType="destinations"
+                entityConfig={entityConfigs.destinations}
+              />
+            )}
+            {activeTab === 'hebergements' && (
+              <EntityManager 
+                entityType="hebergements"
+                entityConfig={entityConfigs.hebergements}
+              />
+            )}
+            {activeTab === 'activites' && (
+              <EntityManager 
+                entityType="activites"
+                entityConfig={entityConfigs.activites}
+              />
+            )}
+            {activeTab === 'certifications' && (
+              <EntityManager 
+                entityType="certifications"
+                entityConfig={entityConfigs.certifications}
+              />
             )}
             {activeTab === 'points' && (
               <CollectionPoints 
